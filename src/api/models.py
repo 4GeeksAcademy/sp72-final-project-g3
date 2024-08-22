@@ -120,7 +120,7 @@ class Songs(db.Model):
         }
 
 
-class covers(db.Model):
+class Covers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     release_date = db.Column(db.Integer, unique=False, nullable=True)
     genre = db.Column(db.String, unique=False, nullable=True)
