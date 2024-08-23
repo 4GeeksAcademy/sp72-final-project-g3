@@ -95,7 +95,8 @@ class Votes(db.Model):
         return {
             'id': self.id,
             'vote': self.vote,
-            'vote_date': self.vote_date,}
+            'vote_date': self.vote_date,
+            'cover_to': [row.serialize() for row in self.cover_to]}
 
 
 class Songs(db.Model):
