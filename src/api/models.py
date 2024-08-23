@@ -33,7 +33,7 @@ class Comments(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to', lazy='select'))
     cover_id = db.Column(db.Integer, db.ForeignKey('covers.id'))
-    cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('cover_to', lazy='select'))
+    cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('comment_to', lazy='select'))
 
     def __repr__(self):
         return f'<Comment {self.id}'
@@ -43,9 +43,11 @@ class Comments(db.Model):
                 'title': self.title,
                 'body': self.body,
                 'media_type': self.media_type,
+                'responses': self.responses,
                 'status': self.status,
                 'date': self.date,
-                'created_at': self.created_at,}
+                'created_at': self.created_at,
+                'comment_to': [row.serialize() for row in self.comment_to]}
 
 
 class Fans(db.Model):
@@ -143,7 +145,8 @@ class Covers(db.Model):
             'genre': self.genre,
             'description': self.description,
             'published_url': self.published_url,
-            'valuation': self.valuation}
+            'valuation': self.valuation,
+            'comment_to': [row.serialize() for row in self.comment_to]}
 
 
 class Artists(db.Model):
