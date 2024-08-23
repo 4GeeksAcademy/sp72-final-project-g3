@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 
 db = SQLAlchemy()
@@ -60,7 +61,7 @@ class Fans(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to', lazy='select'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('fans_to', lazy='select'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
     comment_to = db.relationship('Comments', foreign_keys=[comment_id], backref=db.backref('comment_to', lazy='select'))
 
@@ -83,9 +84,9 @@ class Votes(db.Model):
     vote = db.Column(db.Integer, nullable=False)
     vote_date = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to', lazy='select'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('votes_to', lazy='select'))
     cover_id = db.Column(db.Integer, db.ForeignKey('covers.id'))
-    cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('cover_to', lazy='select'))
+    cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('votes_to', lazy='select'))
 
 
     def __repr__(self):
@@ -105,9 +106,7 @@ class Songs(db.Model):
     genre = db.Column(db.String, nullable=True)
     releaseDate = db.Column(db.Integer, nullable=True)
     lyrics = db.Column(db.String, nullable=True)
-    isrc = db.Column(db.String, unique=False, nullable=True)
-    cover_id = db.Column(db.Integer, db.ForeignKey('covers.id'))
-    cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('cover_to', lazy='select'))    
+    isrc = db.Column(db.String, unique=False, nullable=True)   
 
     def __repr__(self):
         return f'<Song {self.id} - {self.title}>'
@@ -123,34 +122,8 @@ class Songs(db.Model):
         }
 
 
-class Covers(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    release_date = db.Column(db.Integer, unique=False, nullable=True)
-    genre = db.Column(db.String, unique=False, nullable=True)
-    description = db.Column(db.String, unique=False, nullable=True)
-    published_url = db.Column(db.url, nullable=True)
-    valuation = db.Column(db.Integer, nullable=True)
-    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
-    artist_to = db.relationship('Artists', foreign_keys=[artist_id], backref=db.backref('artist_to', lazy='select'))
-    song_id = db.Column(db.Integer, db.ForeignKey('song.id'))
-    song_to = db.relationship('Songs', foreign_keys=[song_id], backref=db.backref('song_to', lazy='select'))
-
-
-    def __repr__(self):
-        return f'<Covers {self.id} - {self.artist_id} - {self.song_id}>'
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'release_date': self.release_date,
-            'genre': self.genre,
-            'description': self.description,
-            'published_url': self.published_url,
-            'valuation': self.valuation,
-            'comment_to': [row.serialize() for row in self.comment_to]}
-
-
 class Artists(db.Model):
+    __tablename__ = 'artists'
     id = db.Column(db.Integer, primary_key=True)
     genre = db.Column(db.String, unique=False, nullable=True)
     foundation = db.Column(db.Integer, unique=False, nullable=True)
@@ -169,7 +142,7 @@ class Artists(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     record_label = db.Column(db.String, unique=False, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to', lazy='select'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('artist_to', lazy='select'))
 
     def __repr__(self):
         return f'<User Artists{self.id}>'
@@ -194,14 +167,41 @@ class Artists(db.Model):
                 'record_label':self.record_label}
 
 
+class Covers(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    release_date = db.Column(db.Integer, unique=False, nullable=True)
+    genre = db.Column(db.String, unique=False, nullable=True)
+    description = db.Column(db.String, unique=False, nullable=True)
+    published_url = db.Column(db.String, nullable=True)
+    valuation = db.Column(db.Integer, nullable=True)
+    artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
+    artist_to = db.relationship('Artists', foreign_keys=[artist_id], backref=db.backref('cover_to', lazy='select'))
+    song_id = db.Column(db.Integer, db.ForeignKey('songs.id'))
+    song_to = db.relationship('Songs', foreign_keys=[song_id], backref=db.backref('cover_to', lazy='select'))
+
+
+    def __repr__(self):
+        return f'<Covers {self.id} - {self.artist_id} - {self.song_id}>'
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'release_date': self.release_date,
+            'genre': self.genre,
+            'description': self.description,
+            'published_url': self.published_url,
+            'valuation': self.valuation,
+            'comment_to': [row.serialize() for row in self.comment_to]}
+
+
 class Follows(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
-    artist_to = db.relationship('Artists', foreign_keys=[artist_id], backref=db.backref('artist_to', lazy='select'))
+    artist_to = db.relationship('Artists', foreign_keys=[artist_id], backref=db.backref('follow_to', lazy='select'))
     fan_id = db.Column(db.Integer, db.ForeignKey('fans.id'))
-    fan_to = db.relationship('Fans', foreign_keys=[fan_id], backref=db.backref('fan_to', lazy='select'))
+    fan_to = db.relationship('Fans', foreign_keys=[fan_id], backref=db.backref('follow_to', lazy='select'))
 
     def __repr__(self):
         return f'<Followers {self.user_id} - {self.artist_id} - {self.fan_id}>'
