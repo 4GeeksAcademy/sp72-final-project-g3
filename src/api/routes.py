@@ -47,3 +47,6 @@ def handle_artist(artist_id):
     if request.method == 'DELETE':
         response_body['message'] = f'recibí el DELETE request {artist_id}'
         return response_body, 200
+
+
+        
