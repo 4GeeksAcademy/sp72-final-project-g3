@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 3fddebfc57bb
+Revision ID: 5a1825352f25
 Revises: 
-Create Date: 2024-08-23 22:23:12.127395
+Create Date: 2024-08-24 09:31:42.925115
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '3fddebfc57bb'
+revision = '5a1825352f25'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=True),
     sa.Column('genre', sa.String(), nullable=True),
-    sa.Column('releaseDate', sa.Integer(), nullable=True),
+    sa.Column('releaseDate', sa.Date(), nullable=False),
     sa.Column('lyrics', sa.String(), nullable=True),
     sa.Column('isrc', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
@@ -40,9 +40,9 @@ def upgrade():
     op.create_table('artists',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('genre', sa.String(), nullable=True),
-    sa.Column('foundation', sa.Integer(), nullable=True),
+    sa.Column('foundation', sa.Date(), nullable=False),
     sa.Column('country', sa.String(), nullable=True),
-    sa.Column('description', sa.String(length=800), nullable=True),
+    sa.Column('description', sa.String(length=600), nullable=False),
     sa.Column('artwork', sa.String(), nullable=False),
     sa.Column('website', sa.String(), nullable=False),
     sa.Column('youtube', sa.String(), nullable=False),
@@ -61,7 +61,7 @@ def upgrade():
     )
     op.create_table('covers',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('release_date', sa.Integer(), nullable=True),
+    sa.Column('release_date', sa.Date(), nullable=False),
     sa.Column('genre', sa.String(), nullable=True),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('published_url', sa.String(), nullable=True),
@@ -90,7 +90,7 @@ def upgrade():
     op.create_table('votes',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('vote', sa.Integer(), nullable=False),
-    sa.Column('vote_date', sa.Integer(), nullable=False),
+    sa.Column('vote_date', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('cover_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['cover_id'], ['covers.id'], ),

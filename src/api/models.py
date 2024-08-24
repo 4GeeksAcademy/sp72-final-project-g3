@@ -82,7 +82,7 @@ class Fans(db.Model):
 class Votes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     vote = db.Column(db.Integer, nullable=False)
-    vote_date = db.Column(db.Integer, nullable=False)
+    vote_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('votes_to', lazy='select'))
     cover_id = db.Column(db.Integer, db.ForeignKey('covers.id'))
@@ -104,7 +104,7 @@ class Songs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=True)
     genre = db.Column(db.String, nullable=True)
-    releaseDate = db.Column(db.Integer, nullable=True)
+    releaseDate = db.Column(db.Date, nullable=False)
     lyrics = db.Column(db.String, nullable=True)
     isrc = db.Column(db.String, unique=False, nullable=True)   
 
@@ -126,9 +126,9 @@ class Artists(db.Model):
     __tablename__ = 'artists'
     id = db.Column(db.Integer, primary_key=True)
     genre = db.Column(db.String, unique=False, nullable=True)
-    foundation = db.Column(db.Integer, unique=False, nullable=True)
+    foundation = db.Column(db.Date, nullable=False)
     country = db.Column(db.String, unique=False, nullable=True)
-    description = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    description = db.Column(db.String(600), nullable=False)
     artwork = db.Column(db.String, unique=False, nullable=False)
     website = db.Column(db.String, unique=False, nullable=False)
     youtube = db.Column(db.String, unique=False, nullable=False)
@@ -169,7 +169,7 @@ class Artists(db.Model):
 
 class Covers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    release_date = db.Column(db.Integer, unique=False, nullable=True)
+    release_date = db.Column(db.Date, nullable=False)
     genre = db.Column(db.String, unique=False, nullable=True)
     description = db.Column(db.String, unique=False, nullable=True)
     published_url = db.Column(db.String, nullable=True)
