@@ -14,7 +14,7 @@ class Users(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
-        return f'<User {self.id} - {self.email}>'
+        return f'<User {self.id} - {self.rol} - {self.email}>'
 
     def serialize(self):
         return {'id': self.id,
