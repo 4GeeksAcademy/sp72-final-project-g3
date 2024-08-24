@@ -128,7 +128,7 @@ class Artists(db.Model):
     genre = db.Column(db.String, unique=False, nullable=True)
     foundation = db.Column(db.Integer, unique=False, nullable=True)
     country = db.Column(db.String, unique=False, nullable=True)
-    description = db.Column(db.String(800), unique=False, nullable=True)
+    description = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     artwork = db.Column(db.String, unique=False, nullable=False)
     website = db.Column(db.String, unique=False, nullable=False)
     youtube = db.Column(db.String, unique=False, nullable=False)
@@ -204,8 +204,9 @@ class Follows(db.Model):
     fan_to = db.relationship('Fans', foreign_keys=[fan_id], backref=db.backref('follow_to', lazy='select'))
 
     def __repr__(self):
-        return f'<Followers {self.user_id} - {self.artist_id} - {self.fan_id}>'
+        return f'<Followers {self.id} - {self.artist_id} - {self.fan_id}>'
 
     def serialize(self):
-        return {"artist_id": self.artist_id,
+        return {"id": self.id,
+                "artist_id": self.artist_id,
                 "fan_id": self.fan_id}
