@@ -49,4 +49,26 @@ def handle_artist(artist_id):
         return response_body, 200
 
 
-        
+@api.route('/fans', methods=['GET'])
+def handle_fans():
+    response_body = {}
+    if request.method == 'GET':
+        rows = db.session.execute(db.select(Fans)).scalars()
+        results = [row.serialize() for row in rows]
+        response_body['results'] = results
+        response_body['message'] = "recibí el GET request"
+        return response_body, 200
+
+
+@api.route('/fans/<int:fans_id>', methods=['GET',])     
+def handle_fan(fans_id):
+    response_body = {}
+    if request.method == 'GET':
+        row = db.session.execute(db.select(Fans).where(Fans.id == fans_id)).scalar()
+        if not row:
+            response_body['results'] = {}
+            response_body['message'] = f'No existe el fan {fans_id}'
+            return response_body, 400
+        response_body['results'] = row.serialize()
+        response_body['message'] = f'recibi el get request {fans_id}'
+        return response_body, 200
