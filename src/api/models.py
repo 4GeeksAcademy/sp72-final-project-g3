@@ -93,8 +93,7 @@ class Votes(db.Model):
         return f'<Vote {self.id} - User {self.user_id}>'
 
     def serialize(self):
-        return {
-            'id': self.id,
+        return {'id': self.id,
             'vote': self.vote,
             'vote_date': self.vote_date,
             'cover_to': [row.serialize() for row in self.cover_to]}
@@ -112,14 +111,12 @@ class Songs(db.Model):
         return f'<Song {self.id} - {self.title}>'
 
     def serialize(self):
-        return {
-            'id': self.id,
+        return {'id': self.id,
             'title': self.title,
             'genre': self.genre,
             'releaseDate': self.releaseDate,
             'lyrics': self.lyrics,
-            'isrc': self.isrc
-        }
+            'isrc': self.isrc}
 
 
 class Artists(db.Model):
@@ -184,8 +181,7 @@ class Covers(db.Model):
         return f'<Covers {self.id} - {self.artist_id} - {self.song_id}>'
 
     def serialize(self):
-        return {
-            'id': self.id,
+        return {'id': self.id,
             'release_date': self.release_date,
             'genre': self.genre,
             'description': self.description,
