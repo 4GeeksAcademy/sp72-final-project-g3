@@ -18,6 +18,24 @@ def handle_hello():
     return response_body, 200
 
 
+@api.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE', ])
+def handle_user(user_id):
+    response_body = {}
+    if request.method == 'GET':
+        user = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
+        if not user:
+            response_body['message'] = f'User whit id {user_id} not found'
+            response_body['results'] = {}
+            return response_body, 404
+        response_body['results'] = user.serialize()
+        response_body['message'] = f'User {user_id} exist'
+        return response_body, 200
+    if request.method == 'PUT':
+        data = request.jason
+        user = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
+
+
+
 @api.route('/artists', methods=['GET'])
 def handle_artists():
     response_body = {}
