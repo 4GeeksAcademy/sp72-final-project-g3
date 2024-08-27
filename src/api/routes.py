@@ -60,7 +60,7 @@ def handle_fans():
         return response_body, 200
 
 
-@api.route('/fans/<int:fans_id>', methods=['GET',])     
+@api.route('/fans/<int:fans_id>', methods=['GET', 'PUT', 'DELETE'])     
 def handle_fan(fans_id):
     response_body = {}
     if request.method == 'GET':
@@ -71,6 +71,12 @@ def handle_fan(fans_id):
             return response_body, 400
         response_body['results'] = row.serialize()
         response_body['message'] = f'recibi el get request {fans_id}'
+        return response_body, 200
+    if request.method == 'PUT':
+        response_body['message'] = f'recibí eñ PUT request {fans_id}'
+        return response_body, 200
+    if request.method == 'DELETE':
+        response_body['message'] = f'recibí el DELETE request {fans_id}'
         return response_body, 200
 
 
