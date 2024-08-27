@@ -59,7 +59,7 @@ class Fans(db.Model):
     name = db.Column(db.String, unique=False, nullable=False)
     nationality = db.Column(db.String, unique=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('fans_to', lazy='select'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
@@ -197,7 +197,7 @@ class Covers(db.Model):
 class Follows(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False)
-    update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
     artist_to = db.relationship('Artists', foreign_keys=[artist_id], backref=db.backref('follow_to', lazy='select'))
     fan_id = db.Column(db.Integer, db.ForeignKey('fans.id'))
@@ -209,4 +209,6 @@ class Follows(db.Model):
     def serialize(self):
         return {"id": self.id,
                 "artist_id": self.artist_id,
-                "fan_id": self.fan_id}
+                "fan_id": self.fan_id,
+                "created_at": self.created_at,
+                "updated_at": self.updated_at}

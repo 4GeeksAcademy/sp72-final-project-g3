@@ -14,13 +14,6 @@ api = Blueprint('api', __name__)
 CORS(api)  # Allow CORS requests to this API
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-    response_body = {}
-    response_body['message'] = "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    return response_body, 200
-
-
 @api.route('/artists', methods=['GET'])
 def handle_artists():
     response_body = {}
@@ -86,15 +79,16 @@ def handle_fan(fans_id):
 @api.route('/login', methods=["POST"])
 def login():
     response_body = {}
-    data = request.josn 
+    data = request.json 
     email = data.get('email', None).lower()
     password = data.get('password', None)
-    user = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password, Users.is_active == True)).scalars()
+    user = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password, Users.is_active == True)).scalar()
     if not user:
         response_body['message'] = 'Something is wrong, check your email/password or user innactive'
         return response_body, 401
-    acces_token = create_access_tokes(identify={'email': email,
-                                                'user_id': user.id,})
+    access_token = create_access_token(identity={'email': email,
+                                                'user_id': user.id,
+                                                'rol': user.rol})
     response_body['results'] = user.serialize()
     response_body['message'] = 'User logged'
     response_body['access_token'] = access_token
@@ -105,4 +99,4 @@ def login():
 def handle_songs():
     response_body = {}
     if request.method == 'GET':
-        rows = db.session.execute(db.select(Songs)).scalars()
+        rows = db.session.execute(db.select(Songs)).scalar() 
