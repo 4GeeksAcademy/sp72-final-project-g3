@@ -136,8 +136,6 @@ def handle_fan(fan_id):
         response_body['results'] = {}
         response_body['message'] = f'No tiene autorización para realizar esta acción'
         return response_body, 403
-    
-
     if request.method == 'GET':
         response_body['results'] = row.serialize()
         response_body['message'] = f'recibí el get request {fan_id}'
@@ -174,8 +172,10 @@ def handle_fan(fan_id):
 
 
 @api.route('/comments/<int:comment_id>', methods=['GET', 'PUT', 'DELETE'])
+@jwt_required() 
 def handle_comment(comment_id):
     response_body = {}
+    current_user = get_jwt_identity()
     if request.method == 'GET':
         row = db.session.execute(db.select(Comments).where(Comments.id == comment_id)).scalar()
         if not row:
@@ -332,8 +332,10 @@ def handle_cover(cover_id):
 
 
 @api.route('/follows/<int:follow_id>', methods=['GET', 'DELETE'])
+@jwt_required() 
 def handle_follow(follow_id):
     response_body = {}
+    current_user = get_jwt_identity()
     if request.method == 'GET':
         row = db.session.execute(db.select(Follows).where(Follows.id == follow_id)).scalar()
         if not row:
