@@ -99,7 +99,15 @@ def handle_fan(fans_id):
         response_body['message'] = f'recibí el PUT request {fans_id}'
         return response_body, 200
     if request.method == 'DELETE':
-        response_body['message'] = f'recibí el DELETE request {fans_id}'
+        row = db.session.execute(db.select(Fans).where(Fans.id == fans_id)).scalar()
+        if not row:
+            response_body['results'] = {}
+            response_body['message'] = f'No existe el fan {fans_id}'
+            return response_body, 404
+        db.session.commit()
+        db.session.delete(row)
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario ha sido desactivado'
         return response_body, 200
         # solo cambiar el active a false(no borrar)
 
