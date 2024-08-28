@@ -9,8 +9,8 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    rol = db.Column(db.Enum('user', 'artist', 'admin', name='rol'), nullable=False)
+    is_active = db.Column(db.Boolean(), default=True, unique=False, nullable=False)
+    rol = db.Column(db.Enum('fans', 'artist', 'admin', name='rol'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -19,7 +19,8 @@ class Users(db.Model):
     def serialize(self):
         return {'id': self.id,
                 'email': self.email,
-                'is_active': self.is_active}
+                'is_active': self.is_active,
+                'rol':self.rol}
 
 
 class Comments(db.Model):
@@ -32,7 +33,7 @@ class Comments(db.Model):
     date = db.Column(db.Date, unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to', lazy='select'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('comment_to', lazy='select'))
     cover_id = db.Column(db.Integer, db.ForeignKey('covers.id'))
     cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('comment_to', lazy='select'))
 
@@ -59,7 +60,7 @@ class Fans(db.Model):
     name = db.Column(db.String, unique=False, nullable=False)
     nationality = db.Column(db.String, unique=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('fans_to', lazy='select'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
@@ -193,7 +194,7 @@ class Covers(db.Model):
 class Follows(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False)
-    update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
     artist_to = db.relationship('Artists', foreign_keys=[artist_id], backref=db.backref('follow_to', lazy='select'))
     fan_id = db.Column(db.Integer, db.ForeignKey('fans.id'))
@@ -205,4 +206,6 @@ class Follows(db.Model):
     def serialize(self):
         return {"id": self.id,
                 "artist_id": self.artist_id,
-                "fan_id": self.fan_id}
+                "fan_id": self.fan_id,
+                "created_at": self.created_at,
+                "updated_at": self.updated_at}

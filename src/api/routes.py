@@ -11,14 +11,7 @@ api = Blueprint('api', __name__)
 CORS(api)  # Allow CORS requests to this API
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-    response_body = {}
-    response_body['message'] = "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    return response_body, 200
-
-
-@api.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE', ])
+@api.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
 def handle_user(user_id):
     response_body = {}
     if request.method == 'GET':
@@ -47,23 +40,56 @@ def handle_artists():
         return response_body, 200
 
 
-@api.route('/artists/<int:artist_id>', methods=['GET', 'PUT', 'DELETE',])
+@api.route('/artists/<int:artist_id>', methods=['GET', 'PUT', 'DELETE'])
+@jwt_required()
 def handle_artist(artist_id):
     response_body = {}
+    current_user = get_jwt_identity()
     if request.method == 'GET':
         row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
         if not row:
             response_body['results'] = {}
-            response_body['message'] = f'No existe el artista {artist_id}'
+            response_body['message'] = f' this artist {artist_id} not exist'
             return response_body, 404
         response_body['results'] = row.serialize()
         response_body['message'] = f'recibí el GET request {artist_id}'
         return response_body, 200
     if request.method == 'PUT':
-        response_body['message'] = f'recibí el PUT request {artist_id}'
+        data = request.json
+        row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
+        if not row:
+            response_body['message'] = f'Artist with id {artist_id} not found'
+            response_body['results'] = {}
+            return response_body, 404
+        row.genre = data.get('genre', row.genre)
+        row.foundation = data.get('foundation', row.foundation)
+        row.country = data.get('country', row.country)
+        row.description = data.get('description', row.description)
+        row.artwork = data.get('artwork', row.artwork)
+        row.website = data.get('website', row.website)
+        row.youtube = data.get('youtube', row.youtube)
+        row.instagram = data.get('instagram', row.instagram)
+        row.tiktok = data.get('tiktok', row.tiktok)
+        row.facebook = data.get('facebook', row.facebook)
+        row.twitter = data.get('twitter', row.twitter)
+        row.is_band = data.get('is_band', row.is_band)
+        row.members = data.get('members', row.members)
+        row.status = data.get('status', row.status)
+        row.record_label = data.get('record_label', row.record_label)
+        db.session.commit()
+        response_body['message'] = f'Artist {artist_id} updated successfully'
+        response_body['results'] = row.serialize()
         return response_body, 200
+
     if request.method == 'DELETE':
-        response_body['message'] = f'recibí el DELETE request {artist_id}'
+        row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
+        if not row:
+            response_body['message'] = f'Artist with id {artist_id} not found'
+            response_body['results'] = {}
+            return response_body, 404
+        db.session.delete(artist)
+        db.session.commit()
+        response_body['message'] = f'Artist {artist_id} deleted successfully'
         return response_body, 200
 
 
