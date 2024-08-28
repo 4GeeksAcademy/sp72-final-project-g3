@@ -8,6 +8,7 @@ from api.models import db, Users, Artists, Covers, Comments, Fans, Follows, Song
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
+from datetime import datetime
 
 
 api = Blueprint('api', __name__)
@@ -52,39 +53,55 @@ def handle_fans():
         rows = db.session.execute(db.select(Fans)).scalars()
         results = [row.serialize() for row in rows]
         response_body['results'] = results
-        response_body['message'] = "recibí el GET request"
+        response_body['message'] = "Listado de fans"
         return response_body, 200
 
 
-@api.route('/fans/<int:fans_id>', methods=['GET', 'PUT', 'DELETE'])     
+@api.route('/fans/<int:fans_id>', methods=['GET', 'PUT', 'DELETE']) 
+@jwt_required()    
 def handle_fan(fans_id):
     response_body = {}
+    current_user = get_jwt_identity()
+    if current_user['rol'] != 'fan':
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un fan'
+        return response_body, 404
+    row = db.session.execute(db.select(Fans).where(Fans.id == fans_id)).scalar()
+    if not row:
+        response_body['results'] = {}
+        response_body['message'] = f'No existe el fan {fans_id}'
+        return response_body, 403
+    if current_user['user_id'] == row.user_id:
+        response_body['results'] = {}
+        response_body['message'] = f'No tiene autorización para realizar esta acción'
+        return response_body, 403
+    
+
     if request.method == 'GET':
-        row = db.session.execute(db.select(Fans).where(Fans.id == fans_id)).scalars()
+        response_body['results'] = row.serialize()
+        response_body['message'] = f'recibí el get request {fans_id}'
+        return response_body, 200
+    if request.method == 'PUT':
+        data = request.get_json()
+        row = db.session.execute(db.select(Fans).where(Fans.id == fans_id)).scalar()
         if not row:
             response_body['results'] = {}
             response_body['message'] = f'No existe el fan {fans_id}'
             return response_body, 404
-        response_body['results'] = row.serialize()
-        response_body['message'] = f'recibi el get request {fans_id}'
-        return response_body, 200
-    if request.method == 'PUT':
-        data = request.get_json()
-        Fans = db.session.execute(db.select(Fans).where(Fans.id == fans_id)).sacalars()
-        if not fan:
-            response_body['results'] = {}
-            response_body['message'] = f'no existe el fan {fans_id}'
-            return response_body, 404
-        fans.name = data.get('name', fans.name)
-        fans.nationality = data.get('nationality', fans.nationality)
-        fans.about = data.get('about', fans.about)
+        row.name = data.get('name', row.name)
+        row.nationality = data.get('nationality', row.nationality)
+        row.about = data.get('about', row.about)
+        row.profile_picture = data.get('profile_picture', row.profile_picture)
+        row.date_of_birth = data.get('date_of_birth', row.date_of_birth)
+        row.updated_at = datetime.utcnow()
         db.session.commit()
-        response_body['results'] = fans.serialize()
+        response_body['results'] = row.serialize()
         response_body['message'] = f'recibí el PUT request {fans_id}'
         return response_body, 200
     if request.method == 'DELETE':
         response_body['message'] = f'recibí el DELETE request {fans_id}'
         return response_body, 200
+        # solo cambiar el active a false(no borrar)
 
 
 @api.route('/login', methods=["POST"])
@@ -111,7 +128,7 @@ def signup():
     response_body = {}
     data = reques.json
     email = data.get('email', None)
-    password = data.json.get('password', None)
+    password = data.get('password', None)
     user.email = email
     user.password = password
     db.session.add(user)
@@ -120,12 +137,12 @@ def signup():
                                                  'user_id': user.id,
                                                  'rol': user.rol})
     response_body['results'] = user.serialize()
-    response_body['message'] = 'Usario registrado con exito'
+    response_body['message'] = 'Usuario registrado con exito'
     response_body['access_token'] = access_token
     return response_body, 201
 
-@api.route('/songs', methods=['GET'])
+""" @api.route('/songs', methods=['GET'])
 def handle_songs():
     response_body = {}
     if request.method == 'GET':
-        rows = db.session.execute(db.select(Songs)).scalar() 
+        rows = db.session.execute(db.select(Songs)).scalar()  """

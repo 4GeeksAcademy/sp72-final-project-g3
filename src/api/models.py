@@ -10,7 +10,7 @@ class Users(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    rol = db.Column(db.Enum('user', 'artist', 'admin', name='rol'), nullable=False)
+    rol = db.Column(db.Enum('fan', 'artist', 'admin', name='rol'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -32,7 +32,7 @@ class Comments(db.Model):
     date = db.Column(db.Date, unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to', lazy='select'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('comment_to', lazy='select'))
     cover_id = db.Column(db.Integer, db.ForeignKey('covers.id'))
     cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('comment_to', lazy='select'))
 
@@ -55,7 +55,7 @@ class Fans(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     profile_picture = db.Column(db.String, unique=False, nullable=False)
     about = db.Column(db.String(300), unique=False, nullable=False)
-    date_of_birth = db.Column(db.Date(), unique=True, nullable=False)
+    date_of_birth = db.Column(db.Date(), unique=False, nullable=False)
     name = db.Column(db.String, unique=False, nullable=False)
     nationality = db.Column(db.String, unique=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
@@ -76,7 +76,8 @@ class Fans(db.Model):
                 'name': self.name,
                 'nationality': self.nationality,
                 'created_at': self.created_at,
-                'updated_at': self.updated_at}
+                'updated_at': self.updated_at,
+                'user_id': self.user_id}
 
 
 class Votes(db.Model):
