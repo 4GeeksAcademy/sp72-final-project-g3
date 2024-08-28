@@ -104,8 +104,8 @@ def handle_fan(fans_id):
             response_body['results'] = {}
             response_body['message'] = f'No existe el fan {fans_id}'
             return response_body, 404
-        db.session.commit()
         db.session.delete(row)
+        db.session.commit()
         response_body['results'] = {}
         response_body['message'] = f'El usuario ha sido desactivado'
         return response_body, 200
@@ -134,20 +134,25 @@ def login():
 @api.route('/signup', methods=['POST'])
 def signup():
     response_body = {}
-    data = reques.json
+    data = request.json
     email = data.get('email', None)
     password = data.get('password', None)
-    user.email = email
-    user.password = password
-    db.session.add(user)
-    db.session.commit()
+    is_active = data.get('is_active', True)
+    rol = data.get('rol', None)
+    if not email or not password:
+        response_body['message'] = 'Email y contraseña son requeridos.'
+        return jsonify(response_body), 400
+    user = Users(email=email, password=password, is_active=is_active, rol=rol)
     access_token = create_access_token(identity={'email': user.email,
                                                  'user_id': user.id,
                                                  'rol': user.rol})
+    db.session.add(user)
+    db.session.commit()
     response_body['results'] = user.serialize()
     response_body['message'] = 'Usuario registrado con exito'
     response_body['access_token'] = access_token
-    return response_body, 201
+    return jsonify(response_body), 201
+
 
 """ @api.route('/songs', methods=['GET'])
 def handle_songs():

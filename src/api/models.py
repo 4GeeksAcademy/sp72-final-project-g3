@@ -9,7 +9,7 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean(), default=True, unique=False, nullable=False)
     rol = db.Column(db.Enum('fan', 'artist', 'admin', name='rol'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
@@ -19,7 +19,8 @@ class Users(db.Model):
     def serialize(self):
         return {'id': self.id,
                 'email': self.email,
-                'is_active': self.is_active}
+                'is_active': self.is_active,
+                'rol':self.rol}
 
 
 class Comments(db.Model):
