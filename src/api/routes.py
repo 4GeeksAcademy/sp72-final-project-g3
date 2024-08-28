@@ -69,6 +69,17 @@ def handle_fan(fans_id):
         response_body['message'] = f'recibi el get request {fans_id}'
         return response_body, 200
     if request.method == 'PUT':
+        data = request.get_json()
+        Fans = db.session.execute(db.select(Fans).where(Fans.id == fans_id)).sacalars()
+        if not fan:
+            response_body['results'] = {}
+            response_body['message'] = f'no existe el fan {fans_id}'
+            return response_body, 404
+        fans.name = data.get('name', fans.name)
+        fans.nationality = data.get('nationality', fans.nationality)
+        fans.about = data.get('about', fans.about)
+        db.session.commit()
+        response_body['results'] = fans.serialize()
         response_body['message'] = f'recibí el PUT request {fans_id}'
         return response_body, 200
     if request.method == 'DELETE':
@@ -94,6 +105,24 @@ def login():
     response_body['access_token'] = access_token
     return response_body, 201
 
+
+@api.route('/signup', methods=['POST'])
+def signup():
+    response_body = {}
+    data = reques.json
+    email = data.get('email', None)
+    password = data.json.get('password', None)
+    user.email = email
+    user.password = password
+    db.session.add(user)
+    db.session.commit()
+    access_token = create_access_token(identity={'email': user.email,
+                                                 'user_id': user.id,
+                                                 'rol': user.rol})
+    response_body['results'] = user.serialize()
+    response_body['message'] = 'Usario registrado con exito'
+    response_body['access_token'] = access_token
+    return response_body, 201
 
 @api.route('/songs', methods=['GET'])
 def handle_songs():
