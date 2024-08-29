@@ -26,6 +26,48 @@ def handle_users():
         return response_body, 200
 
 
+@api.route('/login', methods=["POST"])
+def login():
+    response_body = {}
+    data = request.json
+    email = data.get('email', None).lower()
+    password = data.get('password', None)
+    user = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password, Users.is_active == True)).scalar()
+    if not user:
+        response_body['message'] = 'Something is wrong, check your email/password or user innactive'
+        return response_body, 401
+    access_token = create_access_token(identity={'email': email,
+                                                'user_id': user.id,
+                                                'rol': user.rol})
+    response_body['results'] = user.serialize()
+    response_body['message'] = 'User logged'
+    response_body['access_token'] = access_token
+    return response_body, 201
+
+
+@api.route('/signup', methods=['POST'])
+def signup():
+    response_body = {}
+    data = request.json
+    email = data.get('email', None)
+    password = data.get('password', None)
+    is_active = data.get('is_active', True)
+    rol = data.get('rol', None)
+    if not email or not password:
+        response_body['message'] = 'Email y contraseña son requeridos.'
+        return jsonify(response_body), 400
+    user = Users(email=email, password=password, is_active=is_active, rol=rol)
+    access_token = create_access_token(identity={'email': user.email,
+                                                 'user_id': user.id,
+                                                 'rol': user.rol})
+    db.session.add(user)
+    db.session.commit()
+    response_body['results'] = user.serialize()
+    response_body['message'] = 'Usuario registrado con exito'
+    response_body['access_token'] = access_token
+    return jsonify(response_body), 201
+
+
 @api.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
 def handle_user(user_id):
     response_body = {}
@@ -99,7 +141,6 @@ def handle_artist(artist_id):
         response_body['message'] = f'Artist {artist_id} updated successfully'
         response_body['results'] = row.serialize()
         return response_body, 200
-
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
         if not row:
@@ -360,6 +401,3 @@ def handle_follow(follow_id):
         db.session.commit()
         response_body['message'] = f'Follow {follow_id} deleted successfully'
         return response_body, 200
-
-
-        
