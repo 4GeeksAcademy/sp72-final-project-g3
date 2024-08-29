@@ -51,19 +51,34 @@ def signup():
     data = request.json
     email = data.get('email', None)
     password = data.get('password', None)
-    is_active = data.get('is_active', True)
     rol = data.get('rol', None)
+    profile_picture = data.get('profile_picture', None)
+    about =  data.get('about', None)
+    date_of_birth = data.get('date_of_birth', None)
+    name = data.get('name', None)
+    nationality = data.get('nationality', None)
     if not email or not password:
         response_body['message'] = 'Email y contraseña son requeridos.'
         return jsonify(response_body), 400
-    user = Users(email=email, password=password, is_active=is_active, rol=rol)
+    if rol != 'fan':
+        response_body['message'] = 'Debe ser un Fan para poder registrar sus datos'
+        return jsonify(response_body), 400
+    if rol != 'artist':
+        response_body['message'] = 'Debe ser un Artista para poder registrar sus datos'
+        return jsonify(response_body), 400
+    user = Users(email=email, password=password, rol=rol)
+    db.session.add(user)
+    db.session.commit()
+    # crate fan or artist into database
+    user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
+    fan = Fans(user_id = user.id, profile_picture = profile_picture, about = about, date_of_birth = date_of_birth, name = name, nationality = nationality)
+    db.session.add(fan)
+    db.session.commit()
     access_token = create_access_token(identity={'email': user.email,
                                                  'user_id': user.id,
                                                  'rol': user.rol})
-    db.session.add(user)
-    db.session.commit()
     response_body['results'] = user.serialize()
-    response_body['message'] = 'Usuario registrado con exito'
+    response_body['message'] = f'Usuario registrado con exito con rol: {rol}'
     response_body['access_token'] = access_token
     return jsonify(response_body), 201
 
@@ -178,7 +193,7 @@ def handle_fan(fan_id):
         response_body['results'] = {}
         response_body['message'] = f'No existe el fan {fan_id}'
         return response_body, 403
-    if current_user['user_id'] == row.user_id:
+    if current_user['user_id'] != row.user_id:
         response_body['results'] = {}
         response_body['message'] = f'No tiene autorización para realizar esta acción'
         return response_body, 403
