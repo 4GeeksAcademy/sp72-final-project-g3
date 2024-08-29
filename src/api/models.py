@@ -124,9 +124,10 @@ class Songs(db.Model):
 class Artists(db.Model):
     __tablename__ = 'artists'
     id = db.Column(db.Integer, primary_key=True)
-    genre = db.Column(db.String, unique=False, nullable=True)
+    name = db.Column(db.String, unique=False, nullable=True)
+    genre = db.Column(db.String, unique=False, nullable=False)
     foundation = db.Column(db.Date, nullable=False)
-    country = db.Column(db.String, unique=False, nullable=True)
+    country = db.Column(db.String, unique=False, nullable=False)
     description = db.Column(db.String(600), nullable=False)
     artwork = db.Column(db.String, unique=False, nullable=False)
     website = db.Column(db.String, unique=False, nullable=False)
@@ -137,9 +138,9 @@ class Artists(db.Model):
     twitter = db.Column(db.String, unique=False, nullable=False)
     is_band = db.Column(db.Boolean(), unique=False, nullable=False)
     members = db.Column(db.String, unique=False, nullable=False)
-    status = db.Column(db.Boolean(), unique=False, nullable=True)
+    status = db.Column(db.Boolean(), unique=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    record_label = db.Column(db.String, unique=False, nullable=True)
+    record_label = db.Column(db.String, unique=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('artist_to', lazy='select'))
 

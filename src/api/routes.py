@@ -52,32 +52,37 @@ def signup():
     email = data.get('email', None)
     password = data.get('password', None)
     rol = data.get('rol', None)
-    profile_picture = data.get('profile_picture', None)
-    about =  data.get('about', None)
-    date_of_birth = data.get('date_of_birth', None)
-    name = data.get('name', None)
-    nationality = data.get('nationality', None)
+
     if not email or not password:
         response_body['message'] = 'Email y contraseña son requeridos.'
         return jsonify(response_body), 400
-    if rol != 'fan':
-        response_body['message'] = 'Debe ser un Fan para poder registrar sus datos'
-        return jsonify(response_body), 400
-    if rol != 'artist':
-        response_body['message'] = 'Debe ser un Artista para poder registrar sus datos'
-        return jsonify(response_body), 400
-    user = Users(email=email, password=password, rol=rol)
-    db.session.add(user)
-    db.session.commit()
     # crate fan or artist into database
-    user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
-    fan = Fans(user_id = user.id, profile_picture = profile_picture, about = about, date_of_birth = date_of_birth, name = name, nationality = nationality)
-    db.session.add(fan)
-    db.session.commit()
+    # user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
+    dict_rol = {}
+    if rol == 'fan':
+        user = Users(email=email, password=password, rol=rol)
+        db.session.add(user)
+        db.session.commit()
+        fan = Fans(user_id = user.id)
+        db.session.add(fan)
+        db.session.commit()
+        dict_rol['fan_id'] = fan.id
+    if rol == 'artist':
+        user = Users(email=email, password=password, rol=rol)
+        db.session.add(user)
+        db.session.commit()
+        artist = Artists(user_id = user.id)
+        db.session.add(artist)
+        db.session.commit()
+        dict_rol['artist_id'] = artist.id
+    if not dict_rol:
+        response_body['message'] = 'No tiene un rol adecuado'
+        return response_body, 400
     access_token = create_access_token(identity={'email': user.email,
                                                  'user_id': user.id,
                                                  'rol': user.rol})
     response_body['results'] = user.serialize()
+    response_body['results'].update(dict_rol)
     response_body['message'] = f'Usuario registrado con exito con rol: {rol}'
     response_body['access_token'] = access_token
     return jsonify(response_body), 201
