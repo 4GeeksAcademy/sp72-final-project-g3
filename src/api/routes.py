@@ -26,8 +26,8 @@ def handle_artists():
         return response_body, 200
 
 
-@api.route('/artists/<int:artist_id>', methods=['GET', 'PUT', 'DELETE',])
-def handle_artist(artist_id):
+@api.route('/artists/<int:artist_id>', methods=['GET'])
+def handle_artist_get(artist_id):
     response_body = {}
     if request.method == 'GET':
         row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
@@ -38,6 +38,12 @@ def handle_artist(artist_id):
         response_body['results'] = row.serialize()
         response_body['message'] = f'recibí el GET request {artist_id}'
         return response_body, 200
+
+
+@api.route('/artists/<int:artist_id>', methods=['PUT', 'DELETE'])
+@jwt_required()
+def handle_artist(artist_id):
+    response_body = {}
     if request.method == 'PUT':
         response_body['message'] = f'recibí el PUT request {artist_id}'
         return response_body, 200
