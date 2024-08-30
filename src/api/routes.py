@@ -135,13 +135,23 @@ def handle_artist_get(artist_id):
 @jwt_required()
 def handle_artist(artist_id):
     response_body = {}
+    current_user = get_jwt_identity
+    if current_user['rol'] != 'artist':
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un artista'
+        return response_body, 404
+    row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
+    if not row:
+        response_body['message'] = f'Artist with id {artist_id} not found'
+        response_body['results'] = {}
+        return response_body, 404
+    if current_user['user_id'] == row.user_id:
+        response_body['results'] = {}
+        response_body['message'] = f'No tiene autorización para realizar esta acción'
+        return response_body, 403
     if request.method == 'PUT':
         data = request.json
         row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
-        if not row:
-            response_body['message'] = f'Artist with id {artist_id} not found'
-            response_body['results'] = {}
-            return response_body, 404
         row.genre = data.get('genre', row.genre)
         row.foundation = data.get('foundation', row.foundation)
         row.country = data.get('country', row.country)
@@ -163,11 +173,8 @@ def handle_artist(artist_id):
         return response_body, 200
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
-        if not row:
-            response_body['message'] = f'Artist with id {artist_id} not found'
-            response_body['results'] = {}
-            return response_body, 404
-        db.session.delete(artist)
+        db.session.delete(row)
+        user.is_active = False
         db.session.commit()
         response_body['message'] = f'Artist {artist_id} deleted successfully'
         return response_body, 200
