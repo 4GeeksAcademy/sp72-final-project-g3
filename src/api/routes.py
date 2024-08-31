@@ -85,7 +85,7 @@ def signup():
     response_body['results'].update(dict_rol)
     response_body['message'] = f'Usuario registrado con exito con rol: {rol}'
     response_body['access_token'] = access_token
-    return jsonify(response_body), 201
+    return (response_body), 201
 
 
 @api.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
@@ -185,13 +185,32 @@ def handle_fans():
     response_body = {}
     if request.method == 'GET':
         rows = db.session.execute(db.select(Fans)).scalars()
-        results = [row.serialize() for row in rows]
-        response_body['results'] = results
-        response_body['message'] = "Listado de fans"
+    if not row:
+        response_body['results'] = {}
+        response_body['message'] = f' this artist {artist_id} not exist'
+        return response_body, 404
+    results = [row.serialize() for row in rows]
+    response_body['results'] = results
+    response_body['message'] = "Listado de fans"
+    return response_body, 200
+
+
+@api.route('/fans/<int:fan_id>', methods=['GET'])    
+def handle_fan_get(fan_id):
+    response_body = {}
+    current_user = get_jwt_identity #No estoy seguro si esto debe de ir en el get
+    if request.method == 'GET':
+        row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
+        if not row:
+            response_body['results'] = {}
+            response_body['message'] = f' this fan {fan_id_id} not exist'
+            return response_body, 404
+        response_body['results'] = row.serialize()
+        response_body['message'] = f'recibí el get request {fan_id}'
         return response_body, 200
 
 
-@api.route('/fans/<int:fan_id>', methods=['GET', 'PUT', 'DELETE']) 
+@api.route('/fans/<int:fan_id>', methods=['PUT', 'DELETE']) 
 @jwt_required()    
 def handle_fan(fan_id):
     response_body = {}
@@ -209,17 +228,9 @@ def handle_fan(fan_id):
         response_body['results'] = {}
         response_body['message'] = f'No tiene autorización para realizar esta acción'
         return response_body, 403
-    if request.method == 'GET':
-        response_body['results'] = row.serialize()
-        response_body['message'] = f'recibí el get request {fan_id}'
-        return response_body, 200
     if request.method == 'PUT':
         data = request.get_json()
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
-        if not row:
-            response_body['results'] = {}
-            response_body['message'] = f'No existe el fan {fan_id}'
-            return response_body, 404
         row.name = data.get('name', row.name)
         row.nationality = data.get('nationality', row.nationality)
         row.about = data.get('about', row.about)
@@ -232,12 +243,9 @@ def handle_fan(fan_id):
         return response_body, 200
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
-        if not row:
-            response_body['results'] = {}
-            response_body['message'] = f'No existe el fan {fan_id}'
-            return response_body, 404
         db.session.delete(row)
         db.session.commit()
+        user.is_active = False
         response_body['results'] = {}
         response_body['message'] = f'El usuario ha sido desactivado'
         return response_body, 200
@@ -364,25 +372,39 @@ def handle_song(song_id):
         return response_body, 200
 
 
-@api.route('/covers/<int:cover_id>', methods=['GET', 'PUT', 'DELETE'])
-def handle_cover(cover_id):
+@api.route('/covers/<int:cover_id>', methods=['GET'])
+def handle_cover_get(cover_id):
     response_body = {}
     if request.method == 'GET':
         row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
         if not row:
-            response_body['message'] = f'Cover with id {cover_id} not found'
             response_body['results'] = {}
+            response_body['message'] = f'Cover with id {cover_id} not found'
             return response_body, 404
         response_body['results'] = row.serialize()
         response_body['message'] = f'Cover {cover_id} retrieved successfully'
         return response_body, 200
-    if request.method == 'PUT':
-        data = request.json
-        row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
-        if not row:
+
+
+@api.route('/covers/<int:cover_id>', methods=['PUT', 'POST', 'DELETE'])
+def handle_cover(cover_id):
+    response_body = {}
+    current_user = get_jwt_identity
+    if current_user['rol'] != 'artist':
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un fan'
+        return response_body, 404
+    if not row:
             response_body['message'] = f'Cover with id {cover_id} not found'
             response_body['results'] = {}
             return response_body, 404
+    if current_user['user_id'] == row.user_id: # Verificar que esta logica tiene que ir aquí
+        response_body['results'] = {}
+        response_body['message'] = f'No tiene autorización para realizar esta acción'
+        return response_body, 403
+    if request.method == 'PUT':
+        data = request.json
+        row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
         row.release_date = data.get('release_date', row.release_date)
         row.genre = data.get('genre', row.genre)
         row.description = data.get('description', row.description)
@@ -392,12 +414,25 @@ def handle_cover(cover_id):
         response_body['message'] = f'Cover {cover_id} updated successfully'
         response_body['results'] = row.serialize()
         return response_body, 200
+    if request == 'POST':
+        data = request.json
+        release_date = data.get('release_date', None)
+        genre = data.get('genre', None)
+        description = data.get('description', None)
+        published_url = data.get('published_url', None)
+        valuation = data.get('valuation', None)
+    if not published_url:
+        response_body['results'] = {}
+        response_body["message"] = "Falta published url"
+        return response_body, 400
+    covers = Covers(release_date=release_date, genre=genre, description=description, published_url=published_url, valution=valutaion)
+    db.session.add(cover)
+    db.session.commit()
+    response_body["message"] = "El cover ha sido subido correctamente"
+    return response_body, 200
+
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
-        if not row:
-            response_body['message'] = f'Cover with id {cover_id} not found'
-            response_body['results'] = {}
-            return response_body, 404
         db.session.delete(cover)
         db.session.commit()
         response_body['message'] = f'Cover {cover_id} deleted successfully'
