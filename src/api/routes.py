@@ -104,8 +104,37 @@ def handle_user(user_id):
         response_body['message'] = f'User {user_id} exist'
         return response_body, 200
     if request.method == 'PUT':
-        data = request.jason
+        data = request.json
         user = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
+        if not user:
+            response_body['message'] = f'User with id {user_id} not found'
+            response_body['results'] = {}
+            return response_body, 404
+        email = data.get('email', None)
+        if email:
+            user_exist = db.session.execute(db.select(Users).where(Users.email == email, Users.id != user_id)).scalar()
+            if user_exist:
+                response_body['message'] = 'User with this email already exists'
+                response_body['results'] = {}
+                return response_body, 409
+        user.email = email if email else user.email
+        user.is_active = data.get('is_active', user.is_active)
+        user.rol = data.get('rol', user.rol)
+        db.session.commit()
+        response_body['message'] = f'User {user_id} updated successfully'
+        response_body['results'] = user.serialize()
+        return response_body, 200
+
+    if request.method == 'DELETE':
+        user = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
+        if not user:
+            response_body['message'] = f'User with id {user_id} not found'
+            response_body['results'] = {}
+            return response_body, 404
+        db.session.delete(user)
+        db.session.commit()
+        response_body['message'] = f'User {user_id} deleted successfully'
+        return response_body, 200
 
 
 @api.route('/artists', methods=['GET'])
@@ -122,7 +151,6 @@ def handle_artists():
 @api.route('/artists/<int:artist_id>', methods=['GET'])
 def handle_artist_get(artist_id):
     response_body = {}
-    current_user = get_jwt_identity()
     if request.method == 'GET':
         row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
         if not row:
@@ -217,7 +245,20 @@ def handle_fans():
 @jwt_required() 
 def handle_fan_get(fan_id):
     response_body = {}
-    current_user = get_jwt_identity() #No estoy seguro si esto debe de ir en el get
+    current_user = get_jwt_identity()
+    if current_user['rol'] != 'fan':
+        response_body['results'] = {}
+        response_body['message'] = f'the user is not a fan'
+        return response_body, 404
+    row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
+    if not row:
+        response_body['message'] = f'Fan with id {fan_id} not found'
+        response_body['results'] = {}
+        return response_body, 404
+    if current_user['user_id'] == row.user_id:
+        response_body['results'] = {}
+        response_body['message'] = f'unauthorized, you do not have the required role'
+        return response_body, 403
     if request.method == 'GET':
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
         if not row:
