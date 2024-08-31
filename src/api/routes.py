@@ -293,10 +293,10 @@ def handle_comments():
             response_body['results'] = {}
             response_body["message"] = "your not allowed to do that."
             return response_body, 400
-        comment = Comments(title=title, body=body, media_type=media_type, responses=responses, date=date, user_id=user_id, cover_id=cover_id)
-        db.session.add(comment)
+        comments = Comments(title=title, body=body, media_type=media_type, responses=responses, date=date, user_id=user_id, cover_id=cover_id)
+        db.session.add(comments)
         db.session.commit()
-        response_body["message"] = f'you {user_id} commented {cover_id} succesfully' # Qué muestre el voto validado. {fan.id} votado a {cover.id}
+        response_body["message"] = f'you {user_id} commented {cover_id} succesfully' 
         return response_body, 200
 
 @api.route('/comments/<int:comment_id>', methods=['GET', 'PUT', 'DELETE'])
