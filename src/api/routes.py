@@ -376,7 +376,7 @@ def handle_comment(comment_id):
             response_body['message'] = f'Comment with id {comment_id} not found'
             response_body['results'] = {}
             return response_body, 404
-        db.session.delete(comment)
+        db.session.delete(row)
         db.session.commit()
         response_body['message'] = f'Comment {comment_id} deleted successfully'
         return response_body, 200
@@ -438,7 +438,7 @@ def handle_vote(vote_id):
             response_body['message'] = f'Vote with id {vote_id} not found'
             response_body['results'] = {}
             return response_body, 404
-        db.session.delete(vote)
+        db.session.delete(row)
         db.session.commit()
         response_body['message'] = f'Vote {vote_id} deleted successfully'
         return response_body, 200
@@ -460,11 +460,7 @@ def handle_songs():
         genre = data.get('genre', None)
         releaseDate = data.get('releaseDate', None)
         lyrics = data.get('lyrics', None)
-        isrc = data.get('iscr', None)    
-        if not artist:
-            response_body['results'] = {}
-            response_body["message"] = "your not allowed to do that."
-            return response_body, 400
+        isrc = data.get('isrc', None)    
         if not title:
             response_body['results'] = {}
             response_body["message"] = "Song title is missing"
@@ -472,7 +468,7 @@ def handle_songs():
         songs = Songs(title=title, genre=genre, releaseDate=releaseDate, lyrics=lyrics, isrc=isrc)
         db.session.add(songs)
         db.session.commit()
-        response_body["message"] = f'you {user_id} created {song.title} succesfully' # Qué muestre el nombre de la canción creada
+        response_body["message"] = f'you {current_user["id"]} created {songs.title} succesfully' # Qué muestre el nombre de la canción creada
         return response_body, 200
 
 
@@ -493,10 +489,11 @@ def handle_song_get(song_id):
 @api.route('/songs/<int:song_id>', methods=['PUT', 'DELETE'])
 def handle_song(song_id):
     response_body = {}
-    current_user = get_jwt_identity
+    current_user = get_jwt_identity()
     if current_user['rol'] != 'artist': # Qué sea usuario registrado con el rol adecuado.
         response_body['results'] = {}
         response_body['message'] = f'El usuario no es un artista'
+        return response_body, 404
     if request.method == 'PUT':
         data = request.json
         row = db.session.execute(db.select(Songs).where(Songs.id == song_id)).scalar()
@@ -520,7 +517,7 @@ def handle_song(song_id):
             response_body['message'] = f'Song with id {song_id} not found'
             response_body['results'] = {}
             return response_body, 404
-        db.session.delete(song)
+        db.session.delete(row)
         db.session.commit()
         response_body['message'] = f'Song {song_id} deleted successfully'
         return response_body, 200
