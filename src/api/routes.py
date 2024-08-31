@@ -54,12 +54,12 @@ def signup():
     rol = data.get('rol', None)
 
     if not email or not password:
-        response_body['message'] = 'Email y contraseña son requeridos.'
+        response_body['message'] = 'Email and password required.'
         return jsonify(response_body), 400
     # crate fan or artist into database
     user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
     if user: 
-        response_body['message'] = 'El usuario ya existe'
+        response_body['message'] = 'The user already exist'
         return response_body, 400
     dict_rol = {}
     if rol == 'fan':
@@ -79,14 +79,14 @@ def signup():
         db.session.commit()
         dict_rol['artist_id'] = artist.id
     if not dict_rol:
-        response_body['message'] = 'No tiene un rol adecuado'
+        response_body['message'] = 'Request rejected. Not a valid rol'
         return response_body, 400
     access_token = create_access_token(identity={'email': user.email,
                                                  'user_id': user.id,
                                                  'rol': user.rol})
     response_body['results'] = user.serialize()
     response_body['results'].update(dict_rol)
-    response_body['message'] = f'Usuario registrado con exito con rol: {rol}'
+    response_body['message'] = f'User registered sucesfully with rol: {rol}'
     response_body['access_token'] = access_token
     return (response_body), 201
 
@@ -115,7 +115,7 @@ def handle_artists():
         rows = db.session.execute(db.select(Artists)).scalars()
         results = [row.serialize() for row in rows]
         response_body['results'] = results
-        response_body['message'] = "recibí el GET request"
+        response_body['message'] = "Here are all the masterminds"
         return response_body, 200
 
 
@@ -130,7 +130,7 @@ def handle_artist_get(artist_id):
             response_body['message'] = f' this artist {artist_id} not exist'
             return response_body, 404
         response_body['results'] = row.serialize()
-        response_body['message'] = f'recibí el GET request {artist_id}'
+        response_body['message'] = f'There is the artist by ID {artist_id}'
         return response_body, 200
 
 
@@ -141,7 +141,7 @@ def handle_artist(artist_id):
     current_user = get_jwt_identity()
     if current_user['rol'] != 'artist':
         response_body['results'] = {}
-        response_body['message'] = f'El usuario no es un artista'
+        response_body['message'] = f'The user is not an artist'
         return response_body, 404
     row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
     if not row:
@@ -150,7 +150,7 @@ def handle_artist(artist_id):
         return response_body, 404
     if current_user['user_id'] == row.user_id:
         response_body['results'] = {}
-        response_body['message'] = f'No tiene autorización para realizar esta acción'
+        response_body['message'] = f'unauthorized, you do not have the required role'
         return response_body, 403
     if request.method == 'PUT':
         data = request.json
@@ -190,7 +190,7 @@ def handle_fans():
     current_user = get_jwt_identity()
     if current_user['rol'] != 'fan':
         response_body['results'] = {}
-        response_body['message'] = f'this user is not a fan'
+        response_body['message'] = f'the user is not a fan'
         return response_body, 404
     row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
     if not row:
@@ -199,7 +199,7 @@ def handle_fans():
         return response_body, 404
     if current_user['user_id'] == row.user_id:
         response_body['results'] = {}
-        response_body['message'] = f'No tiene autorización para realizar esta acción'
+        response_body['message'] = f'unauthorized, you do not have the required role'
         return response_body, 403
     if request.method == 'GET':
         row = db.session.execute(db.select(Fans)).scalars()
@@ -209,7 +209,7 @@ def handle_fans():
         return response_body, 404
     results = [row.serialize() for row in row]
     response_body['results'] = results
-    response_body['message'] = "Listado de fans"
+    response_body['message'] = "Fan list"
     return response_body, 200
 
 
@@ -225,7 +225,7 @@ def handle_fan_get(fan_id):
             response_body['message'] = f' this fan {fan_id_id} not exist'
             return response_body, 404
         response_body['results'] = row.serialize()
-        response_body['message'] = f'recibí el get request {fan_id}'
+        response_body['message'] = f'Fan by ID {fan_id}'
         return response_body, 200
 
 
