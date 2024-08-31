@@ -57,7 +57,10 @@ def signup():
         response_body['message'] = 'Email y contraseña son requeridos.'
         return jsonify(response_body), 400
     # crate fan or artist into database
-    # user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
+    user = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
+    if user: 
+        response_body['message'] = 'El usuario ya existe'
+        return response_body, 400
     dict_rol = {}
     if rol == 'fan':
         user = Users(email=email, password=password, rol=rol)
@@ -135,7 +138,7 @@ def handle_artist_get(artist_id):
 @jwt_required()
 def handle_artist(artist_id):
     response_body = {}
-    current_user = get_jwt_identity
+    current_user = get_jwt_identity()
     if current_user['rol'] != 'artist':
         response_body['results'] = {}
         response_body['message'] = f'El usuario no es un artista'
@@ -181,24 +184,40 @@ def handle_artist(artist_id):
 
 
 @api.route('/fans', methods=['GET'])
+@jwt_required()
 def handle_fans():
     response_body = {}
+    current_user = get_jwt_identity()
+    if current_user['rol'] != 'fan':
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un artista'
+        return response_body, 404
+    row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
+    if not row:
+        response_body['message'] = f'Artist with id {artist_id} not found'
+        response_body['results'] = {}
+        return response_body, 404
+    if current_user['user_id'] == row.user_id:
+        response_body['results'] = {}
+        response_body['message'] = f'No tiene autorización para realizar esta acción'
+        return response_body, 403
     if request.method == 'GET':
-        rows = db.session.execute(db.select(Fans)).scalars()
+        row = db.session.execute(db.select(Fans)).scalars()
     if not row:
         response_body['results'] = {}
-        response_body['message'] = f' this artist {artist_id} not exist'
+        response_body['message'] = f' this fan {artist_id} not exist'
         return response_body, 404
-    results = [row.serialize() for row in rows]
+    results = [row.serialize() for row in row]
     response_body['results'] = results
     response_body['message'] = "Listado de fans"
     return response_body, 200
 
 
-@api.route('/fans/<int:fan_id>', methods=['GET'])    
+@api.route('/fans/<int:fan_id>', methods=['GET'])   
+@jwt_required() 
 def handle_fan_get(fan_id):
     response_body = {}
-    current_user = get_jwt_identity #No estoy seguro si esto debe de ir en el get
+    current_user = get_jwt_identity() #No estoy seguro si esto debe de ir en el get
     if request.method == 'GET':
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
         if not row:
@@ -294,8 +313,16 @@ def handle_comment(comment_id):
         response_body['message'] = f'Comment {comment_id} deleted successfully'
         return response_body, 200
 
+@api.route('/votes', methods=['POST'])
+@jwt_required()
+def handle_votes():
+# Qué sea usuario registrado con el rol adecuado.
+# Qué muestre el voto validado. {fan.id} votado a {cover.id}
+# 
+
 
 @api.route('/votes/<int:vote_id>', methods=['GET', 'PUT', 'DELETE'])
+@jwt_required()
 def handle_vote(vote_id):
     response_body = {}
     if request.method == 'GET':
@@ -372,6 +399,33 @@ def handle_song(song_id):
         return response_body, 200
 
 
+@api.route('/covers', methods=['POST'])
+@jwt_required()
+def handle_covers():
+    response_body = {}
+    current_user = get_jwt_identity()
+    if current_user['rol'] != 'artist':
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un artista'
+        return response_body, 404
+    if request.method == 'POST':
+        data = request.json
+        release_date = data.get('release_date', None)
+        genre = data.get('genre', None)
+        description = data.get('description', None)
+        published_url = data.get('published_url', None)
+        valuation = data.get('valuation', None)
+        if not published_url:
+            response_body['results'] = {}
+            response_body["message"] = "Falta published url"
+            return response_body, 400
+        covers = Covers(release_date=release_date, genre=genre, description=description, published_url=published_url, valuation=valuation)
+        db.session.add(cover)
+        db.session.commit()
+        response_body["message"] = "El cover ha sido subido correctamente"
+        return response_body, 200
+
+
 @api.route('/covers/<int:cover_id>', methods=['GET'])
 def handle_cover_get(cover_id):
     response_body = {}
@@ -386,10 +440,11 @@ def handle_cover_get(cover_id):
         return response_body, 200
 
 
-@api.route('/covers/<int:cover_id>', methods=['PUT', 'POST', 'DELETE'])
+@api.route('/covers/<int:cover_id>', methods=['PUT', 'DELETE'])
+@jwt_required() 
 def handle_cover(cover_id):
     response_body = {}
-    current_user = get_jwt_identity
+    current_user = get_jwt_identity()
     if current_user['rol'] != 'artist':
         response_body['results'] = {}
         response_body['message'] = f'El usuario no es un fan'
@@ -413,22 +468,6 @@ def handle_cover(cover_id):
         db.session.commit()
         response_body['message'] = f'Cover {cover_id} updated successfully'
         response_body['results'] = row.serialize()
-        return response_body, 200
-    if request == 'POST':
-        data = request.json
-        release_date = data.get('release_date', None)
-        genre = data.get('genre', None)
-        description = data.get('description', None)
-        published_url = data.get('published_url', None)
-        valuation = data.get('valuation', None)
-    if not published_url:
-        response_body['results'] = {}
-        response_body["message"] = "Falta published url"
-        return response_body, 400
-        covers = Covers(release_date=release_date, genre=genre, description=description, published_url=published_url, valution=valutaion)
-        db.session.add(cover)
-        db.session.commit()
-        response_body["message"] = "El cover ha sido subido correctamente"
         return response_body, 200
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
