@@ -465,15 +465,19 @@ def handle_songs():
             response_body['results'] = {}
             response_body["message"] = "your not allowed to do that."
             return response_body, 400
-        votes = Votes(title=title, genre=genre, releaseDate=releaseDate, lyrics=lyrics, isrc=isrc)
+        if not title:
+            response_body['results'] = {}
+            response_body["message"] = "Song title is missing"
+            return response_body, 400
+        songs = Songs(title=title, genre=genre, releaseDate=releaseDate, lyrics=lyrics, isrc=isrc)
         db.session.add(songs)
         db.session.commit()
         response_body["message"] = f'you {user_id} created {song.title} succesfully' # Qué muestre el nombre de la canción creada
         return response_body, 200
 
 
-@api.route('/songs/<int:song_id>', methods=['GET', 'PUT', 'DELETE'])
-def handle_song(song_id):
+@api.route('/songs/<int:song_id>', methods=['GET'])
+def handle_song_get(song_id):
     response_body = {}
     if request.method == 'GET':
         row = db.session.execute(db.select(Songs).where(Songs.id == song_id)).scalar()
@@ -484,6 +488,15 @@ def handle_song(song_id):
         response_body['results'] = row.serialize()
         response_body['message'] = f'Song {song_id} retrieved successfully'
         return response_body, 200
+
+
+@api.route('/songs/<int:song_id>', methods=['PUT', 'DELETE'])
+def handle_song(song_id):
+    response_body = {}
+    current_user = get_jwt_identity
+    if current_user['rol'] != 'artist': # Qué sea usuario registrado con el rol adecuado.
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un artista'
     if request.method == 'PUT':
         data = request.json
         row = db.session.execute(db.select(Songs).where(Songs.id == song_id)).scalar()
