@@ -425,12 +425,11 @@ def handle_cover(cover_id):
         response_body['results'] = {}
         response_body["message"] = "Falta published url"
         return response_body, 400
-    covers = Covers(release_date=release_date, genre=genre, description=description, published_url=published_url, valution=valutaion)
-    db.session.add(cover)
-    db.session.commit()
-    response_body["message"] = "El cover ha sido subido correctamente"
-    return response_body, 200
-
+        covers = Covers(release_date=release_date, genre=genre, description=description, published_url=published_url, valution=valutaion)
+        db.session.add(cover)
+        db.session.commit()
+        response_body["message"] = "El cover ha sido subido correctamente"
+        return response_body, 200
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
         db.session.delete(cover)
