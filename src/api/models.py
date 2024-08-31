@@ -29,7 +29,6 @@ class Comments(db.Model):
     body = db.Column(db.Text(), nullable=False)
     media_type = db.Column(db.Enum('img', 'png', 'mp4', 'link', name='media_type'), nullable=False)
     responses = db.Column(db.Text(), nullable=False)
-    status = db.Column(db.Boolean(), unique=False, nullable=False)
     date = db.Column(db.Date, unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -169,6 +168,7 @@ class Artists(db.Model):
 
 class Covers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
     release_date = db.Column(db.Date, nullable=False)
     genre = db.Column(db.String, unique=False, nullable=True)
     description = db.Column(db.String, unique=False, nullable=True)

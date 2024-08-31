@@ -190,11 +190,11 @@ def handle_fans():
     current_user = get_jwt_identity()
     if current_user['rol'] != 'fan':
         response_body['results'] = {}
-        response_body['message'] = f'El usuario no es un artista'
+        response_body['message'] = f'this user is not a fan'
         return response_body, 404
-    row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
+    row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
     if not row:
-        response_body['message'] = f'Artist with id {artist_id} not found'
+        response_body['message'] = f'Fan with id {fan_id} not found'
         response_body['results'] = {}
         return response_body, 404
     if current_user['user_id'] == row.user_id:
@@ -205,7 +205,7 @@ def handle_fans():
         row = db.session.execute(db.select(Fans)).scalars()
     if not row:
         response_body['results'] = {}
-        response_body['message'] = f' this fan {artist_id} not exist'
+        response_body['message'] = f' this fan {fan_id} not exist'
         return response_body, 404
     results = [row.serialize() for row in row]
     response_body['results'] = results
@@ -271,6 +271,34 @@ def handle_fan(fan_id):
         # solo cambiar el active a false(no borrar)
 
 
+@api.route('/comments', methods=['POST'])
+@jwt_required()
+def handle_comments():
+    response_body = {}
+    current_user = get_jwt_identity()
+    if current_user['rol'] != 'fan': # Qué sea usuario registrado con el rol adecuado.
+        response_body['results'] = {}
+        response_body['message'] = f'pedro pedro pedro pedro...'
+        return response_body, 404
+    if request.method == 'POST':
+        data = request.json
+        title = data.get('title', None)
+        body = data.get('body', None)
+        media_type = data.get('media_type', None)
+        responses = data.get('responses', None)   
+        date = data.get('date', None)
+        user_id = data.get('user_id', None)
+        cover_id = data.get('cover_id', None)    
+        if not fan:
+            response_body['results'] = {}
+            response_body["message"] = "your not allowed to do that."
+            return response_body, 400
+        comment = Comments(title=title, body=body, media_type=media_type, responses=responses, date=date, user_id=user_id, cover_id=cover_id)
+        db.session.add(comment)
+        db.session.commit()
+        response_body["message"] = f'you {user_id} commented {cover_id} succesfully' # Qué muestre el voto validado. {fan.id} votado a {cover.id}
+        return response_body, 200
+
 @api.route('/comments/<int:comment_id>', methods=['GET', 'PUT', 'DELETE'])
 @jwt_required() 
 def handle_comment(comment_id):
@@ -296,7 +324,6 @@ def handle_comment(comment_id):
         row.body = data.get('body', row.body)
         row.media_type = data.get('media_type', row.media_type)
         row.responses = data.get('responses', row.responses)
-        row.status = data.get('status', row.status)
         row.date = data.get('date', row.date)
         db.session.commit()
         response_body['message'] = f'Comment {comment_id} updated successfully'
@@ -316,9 +343,27 @@ def handle_comment(comment_id):
 @api.route('/votes', methods=['POST'])
 @jwt_required()
 def handle_votes():
-# Qué sea usuario registrado con el rol adecuado.
-# Qué muestre el voto validado. {fan.id} votado a {cover.id}
-# 
+    response_body = {}
+    current_user = get_jwt_identity()
+    if current_user['rol'] != 'fan': # Qué sea usuario registrado con el rol adecuado.
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un fan'
+        return response_body, 404
+    if request.method == 'POST':
+        data = request.json
+        vote = data.get('vote', None)
+        vote_date = data.get('vote_date', None)
+        user_id = data.get('user_id', None)
+        cover_id = data.get('cover_id', None)       
+        if not fan:
+            response_body['results'] = {}
+            response_body["message"] = "your not allowed to do that."
+            return response_body, 400
+        votes = Votes(vote=vote, vote_date=vote_date, user_id=user_id, cover_id=cover_id)
+        db.session.add(votes)
+        db.session.commit()
+        response_body["message"] = f'you {user_id} voted {cover_id} succesfully' # Qué muestre el voto validado. {fan.id} votado a {cover.id}
+        return response_body, 200
 
 
 @api.route('/votes/<int:vote_id>', methods=['GET', 'PUT', 'DELETE'])
