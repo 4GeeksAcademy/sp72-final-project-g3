@@ -444,6 +444,34 @@ def handle_vote(vote_id):
         return response_body, 200
 
 
+@api.route('/songs', methods=['POST'])
+@jwt_required()
+def handle_songs():
+    response_body = {}
+    current_user = get_jwt_identity()
+    if current_user['rol'] != 'artist': # Qué sea usuario registrado con el rol adecuado.
+        response_body['results'] = {}
+        response_body['message'] = f'El usuario no es un artista'
+        return response_body, 404
+    if request.method == 'POST':
+        data = request.json
+        id = data.get('id', None)
+        title = data.get('title', None)
+        genre = data.get('genre', None)
+        releaseDate = data.get('releaseDate', None)
+        lyrics = data.get('lyrics', None)
+        isrc = data.get('iscr', None)    
+        if not artist:
+            response_body['results'] = {}
+            response_body["message"] = "your not allowed to do that."
+            return response_body, 400
+        votes = Votes(title=title, genre=genre, releaseDate=releaseDate, lyrics=lyrics, isrc=isrc)
+        db.session.add(songs)
+        db.session.commit()
+        response_body["message"] = f'you {user_id} created {song.title} succesfully' # Qué muestre el nombre de la canción creada
+        return response_body, 200
+
+
 @api.route('/songs/<int:song_id>', methods=['GET', 'PUT', 'DELETE'])
 def handle_song(song_id):
     response_body = {}
