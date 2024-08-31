@@ -176,13 +176,14 @@ def handle_artist(artist_id):
         response_body['message'] = f'Artist with id {artist_id} not found'
         response_body['results'] = {}
         return response_body, 404
-    if current_user['user_id'] == row.user_id:
+    if current_user['user_id'] != row.user_id:
         response_body['results'] = {}
         response_body['message'] = f'unauthorized, you do not have the required role'
         return response_body, 403
     if request.method == 'PUT':
         data = request.json
         row = db.session.execute(db.select(Artists).where(Artists.id == artist_id)).scalar()
+        row.name = fata.get('name', row.name)
         row.genre = data.get('genre', row.genre)
         row.foundation = data.get('foundation', row.foundation)
         row.country = data.get('country', row.country)
@@ -317,7 +318,7 @@ def handle_fan(fan_id):
 def handle_comments():
     response_body = {}
     current_user = get_jwt_identity()
-    if current_user['rol'] != 'fan': # Qué sea usuario registrado con el rol adecuado.
+    if current_user['rol'] !='fan': # Qué sea usuario registrado con el rol adecuado.
         response_body['results'] = {}
         response_body['message'] = f'pedro pedro pedro pedro...'
         return response_body, 404
@@ -487,6 +488,7 @@ def handle_song_get(song_id):
 
 
 @api.route('/songs/<int:song_id>', methods=['PUT', 'DELETE'])
+@jwt_required()
 def handle_song(song_id):
     response_body = {}
     current_user = get_jwt_identity()
@@ -573,6 +575,7 @@ def handle_cover(cover_id):
         response_body['results'] = {}
         response_body['message'] = f'El usuario no es un fan'
         return response_body, 404
+        row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
     if not row:
             response_body['message'] = f'Cover with id {cover_id} not found'
             response_body['results'] = {}
@@ -590,16 +593,30 @@ def handle_cover(cover_id):
         row.published_url = data.get('published_url', row.published_url)
         row.valuation = data.get('valuation', row.valuation)
         db.session.commit()
-        response_body['message'] = f'Cover {cover_id} updated successfully'
         response_body['results'] = row.serialize()
+        response_body['message'] = f'Cover {cover_id} updated successfully'
         return response_body, 200
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
-        db.session.delete(cover)
+        db.session.delete(row)
         db.session.commit()
         response_body['message'] = f'Cover {cover_id} deleted successfully'
         return response_body, 200
 
+
+"""     if request.method == 'PUT':
+        data = request.get_json()
+        row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
+        row.name = data.get('name', row.name)
+        row.nationality = data.get('nationality', row.nationality)
+        row.about = data.get('about', row.about)
+        row.profile_picture = data.get('profile_picture', row.profile_picture)
+        row.date_of_birth = data.get('date_of_birth', row.date_of_birth)
+        row.updated_at = datetime.utcnow()
+        db.session.commit()
+        response_body['results'] = row.serialize()
+        response_body['message'] = f'recibí el PUT request {fan_id}'
+        return response_body, 200 """
 
 @api.route('/follows/<int:follow_id>', methods=['POST'])
 @jwt_required()

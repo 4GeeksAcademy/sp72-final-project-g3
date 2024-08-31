@@ -45,7 +45,6 @@ class Comments(db.Model):
                 'body': self.body,
                 'media_type': self.media_type,
                 'responses': self.responses,
-                'status': self.status,
                 'date': self.date,
                 'created_at': self.created_at,
                 'comment_to': [row.serialize() for row in self.comment_to]}
@@ -104,7 +103,7 @@ class Songs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=True)
     genre = db.Column(db.String, nullable=True)
-    releaseDate = db.Column(db.Date, nullable=False)
+    launch_date = db.Column(db.Date, nullable=True)
     lyrics = db.Column(db.String, nullable=True)
     isrc = db.Column(db.String, unique=False, nullable=True)   
 
@@ -115,7 +114,7 @@ class Songs(db.Model):
         return {'id': self.id,
             'title': self.title,
             'genre': self.genre,
-            'releaseDate': self.releaseDate,
+            'launch_date': self.lunch_date,
             'lyrics': self.lyrics,
             'isrc': self.isrc}
 
@@ -148,6 +147,7 @@ class Artists(db.Model):
 
     def serialize(self):
         return {'id':self.id,
+                'name':self.name,
                 'genre':self.genre,
                 'foundation':self.foundation,
                 'country':self.country,
