@@ -601,6 +601,23 @@ def handle_cover(cover_id):
         return response_body, 200
 
 
+@api.route('/follows/<int:follow_id>', methods=['POST'])
+@jwt_required()
+def handle_follow_post(follow_id):
+    response_body = {}
+    current_user = get_jwt_identity()
+    if request.method == 'POST':
+        data = request.json
+        created_at = data.get('created_at', None)
+        updated_at = data.get('updated_ad', None)
+        artist_id = data.get('artist_id', None)
+        fan_id = data.get('fan_id', None)
+        follows = Covers(created_at=created_at, updated_at=updated_at, artist_id=artist_id, fan_id=fan_id)
+        db.session.add(follow)
+        db.session.commit()
+        response_body["message"] = "El cover ha sido subido correctamente"
+        return response_body, 200
+
 @api.route('/follows/<int:follow_id>', methods=['GET', 'DELETE'])
 @jwt_required() 
 def handle_follow(follow_id):
