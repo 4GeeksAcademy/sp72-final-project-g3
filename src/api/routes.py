@@ -321,7 +321,7 @@ def handle_comments():
     if current_user['rol'] !='fan': # Qué sea usuario registrado con el rol adecuado.
         response_body['results'] = {}
         response_body['message'] = f'pedro pedro pedro pedro...'
-        return response_body, 404
+        return response_body, 403
     if request.method == 'POST':
         data = request.json
         title = data.get('title', None)
@@ -331,15 +331,23 @@ def handle_comments():
         date = data.get('date', None)
         user_id = data.get('user_id', None)
         cover_id = data.get('cover_id', None)    
-        if not fan:
-            response_body['results'] = {}
-            response_body["message"] = "your not allowed to do that."
-            return response_body, 400
         comments = Comments(title=title, body=body, media_type=media_type, responses=responses, date=date, user_id=user_id, cover_id=cover_id)
         db.session.add(comments)
         db.session.commit()
-        response_body["message"] = f'you {user_id} commented {cover_id} succesfully' 
+        response_body["message"] = f'you commented succesfully' 
         return response_body, 200
+
+
+@api.route('/comments', methods=['GET'])
+def handle_all_comments():
+    response_body = {}
+    if request.method == 'GET':
+        rows = db.session.execute(db.select(Comments)).scalars()
+        results = [row.serialize() for row in rows]
+        response_body['results'] = results
+        response_body['message'] = "you are getin all the Covers"
+        return response_body, 200
+
 
 @api.route('/comments/<int:comment_id>', methods=['GET', 'PUT', 'DELETE'])
 @jwt_required() 
@@ -536,19 +544,31 @@ def handle_covers():
         return response_body, 404
     if request.method == 'POST':
         data = request.json
+        name = data.get('name', None)
         release_date = data.get('release_date', None)
         genre = data.get('genre', None)
         description = data.get('description', None)
         published_url = data.get('published_url', None)
         valuation = data.get('valuation', None)
-        if not published_url:
+        if not release_date:
             response_body['results'] = {}
-            response_body["message"] = "Falta published url"
+            response_body["message"] = "release_date is missing"
             return response_body, 400
-        covers = Covers(release_date=release_date, genre=genre, description=description, published_url=published_url, valuation=valuation)
-        db.session.add(cover)
+        covers = Covers(name=name, release_date=release_date, genre=genre, description=description, published_url=published_url, valuation=valuation)
+        db.session.add(covers)
         db.session.commit()
         response_body["message"] = "El cover ha sido subido correctamente"
+        return response_body, 200
+
+
+@api.route('/covers', methods=['GET'])
+def handle_all_covers():
+    response_body = {}
+    if request.method == 'GET':
+        rows = db.session.execute(db.select(Covers)).scalars()
+        results = [row.serialize() for row in rows]
+        response_body['results'] = results
+        response_body['message'] = "you are getin all the Covers"
         return response_body, 200
 
 
@@ -599,20 +619,6 @@ def handle_cover(cover_id):
         response_body['message'] = f'Cover {cover_id} deleted successfully'
         return response_body, 200
 
-
-"""     if request.method == 'PUT':
-        data = request.get_json()
-        row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
-        row.name = data.get('name', row.name)
-        row.nationality = data.get('nationality', row.nationality)
-        row.about = data.get('about', row.about)
-        row.profile_picture = data.get('profile_picture', row.profile_picture)
-        row.date_of_birth = data.get('date_of_birth', row.date_of_birth)
-        row.updated_at = datetime.utcnow()
-        db.session.commit()
-        response_body['results'] = row.serialize()
-        response_body['message'] = f'recibí el PUT request {fan_id}'
-        return response_body, 200 """
 
 @api.route('/follows/<int:follow_id>', methods=['POST'])
 @jwt_required()

@@ -169,7 +169,7 @@ class Artists(db.Model):
 class Covers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    release_date = db.Column(db.Date, nullable=False)
+    release_date = db.Column(db.Date, nullable=True)
     genre = db.Column(db.String, unique=False, nullable=True)
     description = db.Column(db.String, unique=False, nullable=True)
     published_url = db.Column(db.String, nullable=True)
