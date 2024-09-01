@@ -256,7 +256,7 @@ def handle_fan_get(fan_id):
         response_body['message'] = f'Fan with id {fan_id} not found'
         response_body['results'] = {}
         return response_body, 404
-    if current_user['user_id'] == row.user_id:
+    if current_user['user_id'] != row.user_id:
         response_body['results'] = {}
         response_body['message'] = f'unauthorized, you do not have the required role'
         return response_body, 403
@@ -305,8 +305,8 @@ def handle_fan(fan_id):
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
         db.session.delete(row)
-        db.session.commit()
         user.is_active = False
+        db.session.commit()
         response_body['results'] = {}
         response_body['message'] = f'El usuario ha sido desactivado'
         return response_body, 200
@@ -575,15 +575,11 @@ def handle_cover(cover_id):
         response_body['results'] = {}
         response_body['message'] = f'El usuario no es un fan'
         return response_body, 404
-        row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
+    row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()
     if not row:
             response_body['message'] = f'Cover with id {cover_id} not found'
             response_body['results'] = {}
             return response_body, 404
-    if current_user['user_id'] == row.user_id: # Verificar que esta logica tiene que ir aquí
-        response_body['results'] = {}
-        response_body['message'] = f'No tiene autorización para realizar esta acción'
-        return response_body, 403
     if request.method == 'PUT':
         data = request.json
         row = db.session.execute(db.select(Covers).where(Covers.id == cover_id)).scalar()

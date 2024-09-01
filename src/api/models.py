@@ -103,7 +103,7 @@ class Songs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=True)
     genre = db.Column(db.String, nullable=True)
-    launch_date = db.Column(db.Date, nullable=True)
+    releaseDate = db.Column(db.Date, nullable=True)
     lyrics = db.Column(db.String, nullable=True)
     isrc = db.Column(db.String, unique=False, nullable=True)   
 
@@ -114,7 +114,7 @@ class Songs(db.Model):
         return {'id': self.id,
             'title': self.title,
             'genre': self.genre,
-            'launch_date': self.lunch_date,
+            'releaseDate': self.releaseDate,
             'lyrics': self.lyrics,
             'isrc': self.isrc}
 
