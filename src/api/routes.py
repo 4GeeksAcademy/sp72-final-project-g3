@@ -213,23 +213,8 @@ def handle_artist(artist_id):
 
 
 @api.route('/fans', methods=['GET'])
-@jwt_required()
 def handle_fans():
     response_body = {}
-    current_user = get_jwt_identity()
-    if current_user['rol'] != 'fan':
-        response_body['results'] = {}
-        response_body['message'] = f'the user is not a fan'
-        return response_body, 404
-    row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
-    if not row:
-        response_body['message'] = f'Fan with id {fan_id} not found'
-        response_body['results'] = {}
-        return response_body, 404
-    if current_user['user_id'] == row.user_id:
-        response_body['results'] = {}
-        response_body['message'] = f'unauthorized, you do not have the required role'
-        return response_body, 403
     if request.method == 'GET':
         row = db.session.execute(db.select(Fans)).scalars()
     if not row:
