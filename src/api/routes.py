@@ -461,7 +461,7 @@ def handle_songs():
     if current_user['rol'] != 'artist': # Qué sea usuario registrado con el rol adecuado.
         response_body['results'] = {}
         response_body['message'] = f'El usuario no es un artista'
-        return response_body, 404
+        return response_body, 403
     if request.method == 'POST':
         data = request.json
         id = data.get('id', None)
@@ -477,7 +477,18 @@ def handle_songs():
         songs = Songs(title=title, genre=genre, releaseDate=releaseDate, lyrics=lyrics, isrc=isrc)
         db.session.add(songs)
         db.session.commit()
-        response_body["message"] = f'you {current_user["id"]} created {songs.title} succesfully' # Qué muestre el nombre de la canción creada
+        response_body["message"] = f'you created {songs.title} succesfully' # Qué muestre el nombre de la canción creada
+        return response_body, 200
+
+
+@api.route('/songs', methods=['GET'])
+def handle_all_songs():
+    response_body = {}
+    if request.method == 'GET':
+        rows = db.session.execute(db.select(Songs)).scalars()
+        results = [row.serialize() for row in rows]
+        response_body['results'] = results
+        response_body['message'] = "you are getin all the Songs"
         return response_body, 200
 
 
