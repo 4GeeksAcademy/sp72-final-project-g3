@@ -263,17 +263,17 @@ def handle_fan(fan_id):
     current_user = get_jwt_identity()
     if current_user['rol'] != 'fan':
         response_body['results'] = {}
-        response_body['message'] = f'El usuario no es un fan'
+        response_body['message'] = f'This user is not a fan'
         return response_body, 404
     row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
     if not row:
         response_body['results'] = {}
-        response_body['message'] = f'No existe el fan {fan_id}'
+        response_body['message'] = f'Not a fan {fan_id}'
         return response_body, 403
     if current_user['user_id'] != row.user_id:
         response_body['results'] = {}
-        response_body['message'] = f'No tiene autorización para realizar esta acción'
-        return response_body, 403
+        response_body['message'] = f'Not authorized to do this action '
+        return response_body, 404
     if request.method == 'PUT':
         data = request.get_json()
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
@@ -285,7 +285,7 @@ def handle_fan(fan_id):
         row.updated_at = datetime.utcnow()
         db.session.commit()
         response_body['results'] = row.serialize()
-        response_body['message'] = f'recibí el PUT request {fan_id}'
+        response_body['message'] = f'This is a correct PUT request {fan_id}'
         return response_body, 200
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
@@ -293,7 +293,7 @@ def handle_fan(fan_id):
         user.is_active = False
         db.session.commit()
         response_body['results'] = {}
-        response_body['message'] = f'El usuario ha sido desactivado'
+        response_body['message'] = f'User has been disabled'
         return response_body, 200
         # solo cambiar el active a false(no borrar)
 
