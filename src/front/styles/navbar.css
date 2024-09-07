@@ -1,0 +1,10 @@
+.navbar-logo {
+    width: 120px; /* Ancho del logo, ajustable según el diseño */
+    height: auto; /* Mantiene la proporción original del logo */
+    max-height: 60px; /* Limita la altura para que no sea muy alto */
+    padding-right: 10px; /* Espacio entre el logo y el texto del navbar */
+    
+}
+ .navbar-brand{
+    margin-right: 580px ;
+ }

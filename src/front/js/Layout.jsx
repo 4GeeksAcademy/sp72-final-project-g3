@@ -9,6 +9,13 @@ import { Footer } from "./component/Footer.jsx";
 // Custom Pages
 import { Home } from "./pages/Home.jsx";
 import { Error404 } from "./pages/Error404.jsx";
+import { Artist } from "./pages/Artist.jsx";
+import { ArtistProfile } from "./pages/ArtistProfile.jsx";
+import { Artists } from "./pages/Artists.jsx";
+import { Covers } from "./pages/Covers.jsx";
+import { Cover } from "./pages/Cover.jsx";
+import { ProfileFan } from "./pages/ProfileFan.jsx";
+
 
 
 // Create your first component
@@ -26,6 +33,12 @@ const Layout = () => {
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Error404/>} path="*"/>
+                        <Route element={<ProfileFan/>} path="/pages/ProfileFan"/>
+                        <Route element={<Cover />} path="/pages/Cover" />
+                        <Route element={<Covers />} path="/pages/Covers" />
+                        <Route element={<ArtistProfile />} path="/pages/ArtistProfile" />
+                        <Route element={<Artist />} path="/pages/Artist" />
+                        <Route element={<Artists />} path="/pages/Artists" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
