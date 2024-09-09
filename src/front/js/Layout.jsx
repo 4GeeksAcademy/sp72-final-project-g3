@@ -9,6 +9,7 @@ import { Footer } from "./component/Footer.jsx";
 // Custom Pages
 import { Home } from "./pages/Home.jsx";
 import { Error404 } from "./pages/Error404.jsx";
+import { LoginSignup } from "./pages/LoginSignup.jsx";
 
 
 // Create your first component
@@ -26,6 +27,7 @@ const Layout = () => {
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Error404/>} path="*"/>
+                        <Route element={<LoginSignup/>} path="/loginsignup"/>
                     </Routes>
                     <Footer />
                 </ScrollToTop>
