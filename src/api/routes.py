@@ -20,6 +20,15 @@ import json
 api = Blueprint('api', __name__)
 CORS(api)  # Allow CORS requests to this API
 
+
+
+
+
+
+
+
+
+
 #Get de Spotify
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
