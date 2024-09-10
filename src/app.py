@@ -11,6 +11,9 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from api.models import db
 from flask_jwt_extended import JWTManager
+import base64
+import requests
+import json
 
 
 
@@ -36,6 +39,9 @@ app.register_blueprint(api, url_prefix='/api')  # Add all endpoints form the API
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") # Change this!
 jwt = JWTManager(app)
+# SetUp Spotify
+client_id = os.getenv("CLIENT_ID")
+client_secret = os.getenv("CLIENT_SECRET")
 
 
 
