@@ -16,8 +16,7 @@ export const LoginSignup = () => {
         <div className='Container-fluid'>
             <div className="row">
                 <div className="col-md-6 image-container">
-                    <img src={size_img} className="img-fluid" style={{ width: '85vh', height: '100vh' }}></img>
-                    <div className="gradient-overlay"></div>
+                    <img src={size_img} className="img-fluid"></img>
                 </div>
                 <div className="col-md-6  col-sm-12 right-side">
                     <div className="card-login">
