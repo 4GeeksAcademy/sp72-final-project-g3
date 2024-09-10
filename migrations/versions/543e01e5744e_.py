@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 6825fc74ff19
+Revision ID: 543e01e5744e
 Revises: 
-Create Date: 2024-08-28 15:25:44.480073
+Create Date: 2024-09-07 12:51:34.335940
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6825fc74ff19'
+revision = '543e01e5744e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=True),
     sa.Column('genre', sa.String(), nullable=True),
-    sa.Column('releaseDate', sa.Date(), nullable=False),
+    sa.Column('releaseDate', sa.Date(), nullable=True),
     sa.Column('lyrics', sa.String(), nullable=True),
     sa.Column('isrc', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
@@ -39,19 +39,20 @@ def upgrade():
     )
     op.create_table('artists',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=True),
     sa.Column('genre', sa.String(), nullable=True),
-    sa.Column('foundation', sa.Date(), nullable=False),
+    sa.Column('foundation', sa.Date(), nullable=True),
     sa.Column('country', sa.String(), nullable=True),
-    sa.Column('description', sa.String(length=600), nullable=False),
-    sa.Column('artwork', sa.String(), nullable=False),
-    sa.Column('website', sa.String(), nullable=False),
-    sa.Column('youtube', sa.String(), nullable=False),
-    sa.Column('instagram', sa.String(), nullable=False),
-    sa.Column('tiktok', sa.String(), nullable=False),
-    sa.Column('facebook', sa.String(), nullable=False),
-    sa.Column('twitter', sa.String(), nullable=False),
-    sa.Column('is_band', sa.Boolean(), nullable=False),
-    sa.Column('members', sa.String(), nullable=False),
+    sa.Column('description', sa.String(length=600), nullable=True),
+    sa.Column('artwork', sa.String(), nullable=True),
+    sa.Column('website', sa.String(), nullable=True),
+    sa.Column('youtube', sa.String(), nullable=True),
+    sa.Column('instagram', sa.String(), nullable=True),
+    sa.Column('tiktok', sa.String(), nullable=True),
+    sa.Column('facebook', sa.String(), nullable=True),
+    sa.Column('twitter', sa.String(), nullable=True),
+    sa.Column('is_band', sa.Boolean(), nullable=True),
+    sa.Column('members', sa.String(), nullable=True),
     sa.Column('status', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('record_label', sa.String(), nullable=True),
@@ -61,7 +62,8 @@ def upgrade():
     )
     op.create_table('covers',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('release_date', sa.Date(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('release_date', sa.Date(), nullable=True),
     sa.Column('genre', sa.String(), nullable=True),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('published_url', sa.String(), nullable=True),
@@ -78,7 +80,6 @@ def upgrade():
     sa.Column('body', sa.Text(), nullable=False),
     sa.Column('media_type', sa.Enum('img', 'png', 'mp4', 'link', name='media_type'), nullable=False),
     sa.Column('responses', sa.Text(), nullable=False),
-    sa.Column('status', sa.Boolean(), nullable=False),
     sa.Column('date', sa.Date(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
@@ -99,19 +100,18 @@ def upgrade():
     )
     op.create_table('fans',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('profile_picture', sa.String(), nullable=False),
-    sa.Column('about', sa.String(length=300), nullable=False),
-    sa.Column('date_of_birth', sa.Date(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('nationality', sa.String(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('profile_picture', sa.String(), nullable=True),
+    sa.Column('about', sa.String(length=300), nullable=True),
+    sa.Column('date_of_birth', sa.Date(), nullable=True),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('nationality', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('comment_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['comment_id'], ['comments.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('date_of_birth')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('follows',
     sa.Column('id', sa.Integer(), nullable=False),

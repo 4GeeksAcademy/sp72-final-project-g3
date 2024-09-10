@@ -29,7 +29,6 @@ class Comments(db.Model):
     body = db.Column(db.Text(), nullable=False)
     media_type = db.Column(db.Enum('img', 'png', 'mp4', 'link', name='media_type'), nullable=False)
     responses = db.Column(db.Text(), nullable=False)
-    status = db.Column(db.Boolean(), unique=False, nullable=False)
     date = db.Column(db.Date, unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -46,7 +45,6 @@ class Comments(db.Model):
                 'body': self.body,
                 'media_type': self.media_type,
                 'responses': self.responses,
-                'status': self.status,
                 'date': self.date,
                 'created_at': self.created_at,
                 'comment_to': [row.serialize() for row in self.comment_to]}
@@ -54,13 +52,13 @@ class Comments(db.Model):
 
 class Fans(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    profile_picture = db.Column(db.String, unique=False, nullable=False)
-    about = db.Column(db.String(300), unique=False, nullable=False)
-    date_of_birth = db.Column(db.Date(), unique=False, nullable=False)
-    name = db.Column(db.String, unique=False, nullable=False)
-    nationality = db.Column(db.String, unique=False, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    profile_picture = db.Column(db.String, unique=False, nullable=True)
+    about = db.Column(db.String(300), unique=False, nullable=True)
+    date_of_birth = db.Column(db.Date(), unique=False, nullable=True)
+    name = db.Column(db.String, unique=False, nullable=True)
+    nationality = db.Column(db.String, unique=False, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('fans_to', lazy='select'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
@@ -105,7 +103,7 @@ class Songs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=True)
     genre = db.Column(db.String, nullable=True)
-    releaseDate = db.Column(db.Date, nullable=False)
+    releaseDate = db.Column(db.Date, nullable=True)
     lyrics = db.Column(db.String, nullable=True)
     isrc = db.Column(db.String, unique=False, nullable=True)   
 
@@ -124,19 +122,20 @@ class Songs(db.Model):
 class Artists(db.Model):
     __tablename__ = 'artists'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=False, nullable=True)
     genre = db.Column(db.String, unique=False, nullable=True)
-    foundation = db.Column(db.Date, nullable=False)
+    foundation = db.Column(db.Date, nullable=True)
     country = db.Column(db.String, unique=False, nullable=True)
-    description = db.Column(db.String(600), nullable=False)
-    artwork = db.Column(db.String, unique=False, nullable=False)
-    website = db.Column(db.String, unique=False, nullable=False)
-    youtube = db.Column(db.String, unique=False, nullable=False)
-    instagram = db.Column(db.String, unique=False, nullable=False)
-    tiktok = db.Column(db.String, unique=False, nullable=False)
-    facebook = db.Column(db.String, unique=False, nullable=False)
-    twitter = db.Column(db.String, unique=False, nullable=False)
-    is_band = db.Column(db.Boolean(), unique=False, nullable=False)
-    members = db.Column(db.String, unique=False, nullable=False)
+    description = db.Column(db.String(600), nullable=True)
+    artwork = db.Column(db.String, unique=False, nullable=True)
+    website = db.Column(db.String, unique=False, nullable=True)
+    youtube = db.Column(db.String, unique=False, nullable=True)
+    instagram = db.Column(db.String, unique=False, nullable=True)
+    tiktok = db.Column(db.String, unique=False, nullable=True)
+    facebook = db.Column(db.String, unique=False, nullable=True)
+    twitter = db.Column(db.String, unique=False, nullable=True)
+    is_band = db.Column(db.Boolean(), unique=False, nullable=True)
+    members = db.Column(db.String, unique=False, nullable=True)
     status = db.Column(db.Boolean(), unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     record_label = db.Column(db.String, unique=False, nullable=True)
@@ -148,6 +147,7 @@ class Artists(db.Model):
 
     def serialize(self):
         return {'id':self.id,
+                'name':self.name,
                 'genre':self.genre,
                 'foundation':self.foundation,
                 'country':self.country,
@@ -168,7 +168,8 @@ class Artists(db.Model):
 
 class Covers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    release_date = db.Column(db.Date, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    release_date = db.Column(db.Date, nullable=True)
     genre = db.Column(db.String, unique=False, nullable=True)
     description = db.Column(db.String, unique=False, nullable=True)
     published_url = db.Column(db.String, nullable=True)
