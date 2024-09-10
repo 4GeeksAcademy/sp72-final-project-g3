@@ -13,20 +13,12 @@ import os
 import base64
 import requests
 import json
-
-
+import cloudinary
+import cloudinary.uploader
 
 
 api = Blueprint('api', __name__)
 CORS(api)  # Allow CORS requests to this API
-
-
-
-
-
-
-
-
 
 
 #Get de Spotify
@@ -82,6 +74,69 @@ def search_for_track(album):
 
 result = search_for_track('21jF5jlMtzo94wbxmJ18aa')
 print(result)
+
+
+cloudinary.config(
+    cloud_name = os.getenv("ClOUD_NAME"),
+    api_key = os.getenv("CLOUD_KEY"),
+    api_secret = os.getenv("CLOUD_API_SECRET")
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @api.route('/users', methods=['GET'])
@@ -332,17 +387,17 @@ def handle_fan(fan_id):
     current_user = get_jwt_identity()
     if current_user['rol'] != 'fan':
         response_body['results'] = {}
-        response_body['message'] = f'El usuario no es un fan'
+        response_body['message'] = f'This user is not a fan'
         return response_body, 404
     row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
     if not row:
         response_body['results'] = {}
-        response_body['message'] = f'No existe el fan {fan_id}'
+        response_body['message'] = f'Not a fan {fan_id}'
         return response_body, 403
     if current_user['user_id'] != row.user_id:
         response_body['results'] = {}
-        response_body['message'] = f'No tiene autorización para realizar esta acción'
-        return response_body, 403
+        response_body['message'] = f'Not authorized to do this action '
+        return response_body, 404
     if request.method == 'PUT':
         data = request.get_json()
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
@@ -354,7 +409,7 @@ def handle_fan(fan_id):
         row.updated_at = datetime.utcnow()
         db.session.commit()
         response_body['results'] = row.serialize()
-        response_body['message'] = f'recibí el PUT request {fan_id}'
+        response_body['message'] = f'This is a correct PUT request {fan_id}'
         return response_body, 200
     if request.method == 'DELETE':
         row = db.session.execute(db.select(Fans).where(Fans.id == fan_id)).scalar()
@@ -362,7 +417,7 @@ def handle_fan(fan_id):
         user.is_active = False
         db.session.commit()
         response_body['results'] = {}
-        response_body['message'] = f'El usuario ha sido desactivado'
+        response_body['message'] = f'User has been disabled'
         return response_body, 200
         # solo cambiar el active a false(no borrar)
 
@@ -605,7 +660,7 @@ def handle_covers():
     current_user = get_jwt_identity()
     if current_user['rol'] != 'artist':
         response_body['results'] = {}
-        response_body['message'] = f'El usuario no es un artista'
+        response_body['message'] = f'User unauthorized {rol}'
         return response_body, 404
     if request.method == 'POST':
         data = request.json
@@ -726,3 +781,17 @@ def handle_follow(follow_id):
         db.session.commit()
         response_body['message'] = f'Follow {follow_id} deleted successfully'
         return response_body, 200
+
+
+@api.route('/upload', methods=['POST'])
+def upload_img():
+    response_body = {}
+    if 'image' not in request.files:
+        raise APIException('no image to upload')
+    result = cloudinary.uploader.upload(request.files['image'])
+    print(result)
+    print(result['secure_url'])
+    response_body['results'] = result['url']
+    return response_body, 200
+
+

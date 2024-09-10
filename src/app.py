@@ -16,6 +16,9 @@ import requests
 import json
 
 
+
+
+
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
@@ -39,6 +42,9 @@ jwt = JWTManager(app)
 # SetUp Spotify
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
+
+
+
 
 
 # Handle/serialize errors like a JSON object

@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 94eb7de8a69f
+Revision ID: 543e01e5744e
 Revises: 
-Create Date: 2024-08-31 17:52:07.868390
+Create Date: 2024-09-07 12:51:34.335940
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '94eb7de8a69f'
+revision = '543e01e5744e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('title', sa.String(), nullable=True),
     sa.Column('genre', sa.String(), nullable=True),
-    sa.Column('releaseDate', sa.Date(), nullable=False),
+    sa.Column('releaseDate', sa.Date(), nullable=True),
     sa.Column('lyrics', sa.String(), nullable=True),
     sa.Column('isrc', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
@@ -63,7 +63,7 @@ def upgrade():
     op.create_table('covers',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('release_date', sa.Date(), nullable=False),
+    sa.Column('release_date', sa.Date(), nullable=True),
     sa.Column('genre', sa.String(), nullable=True),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('published_url', sa.String(), nullable=True),
