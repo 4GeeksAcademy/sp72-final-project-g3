@@ -11,8 +11,77 @@ from flask_jwt_extended import jwt_required
 from datetime import datetime
 
 
+
+
+import cloudinary
+import cloudinary.uploader
+
+
 api = Blueprint('api', __name__)
 CORS(api)  # Allow CORS requests to this API
+
+
+cloudinary.config(
+    cloud_name = os.getenv("ClOUD_NAME"),
+    api_key = os.getenv("CLOUD_KEY"),
+    api_secret = os.getenv("CLOUD_API_SECRET")
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @api.route('/users', methods=['GET'])
@@ -536,7 +605,7 @@ def handle_covers():
     current_user = get_jwt_identity()
     if current_user['rol'] != 'artist':
         response_body['results'] = {}
-        response_body['message'] = f'El usuario no es un artista'
+        response_body['message'] = f'User unauthorized {rol}'
         return response_body, 404
     if request.method == 'POST':
         data = request.json
@@ -657,3 +726,17 @@ def handle_follow(follow_id):
         db.session.commit()
         response_body['message'] = f'Follow {follow_id} deleted successfully'
         return response_body, 200
+
+
+@api.route('/upload', methods=['POST'])
+def upload_img():
+    response_body = {}
+    if 'image' not in request.files:
+        raise APIException('no image to upload')
+    result = cloudinary.uploader.upload(request.files['image'])
+    print(result)
+    print(result['secure_url'])
+    response_body['results'] = result['url']
+    return response_body, 200
+
+

@@ -13,6 +13,9 @@ from api.models import db
 from flask_jwt_extended import JWTManager
 
 
+
+
+
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
@@ -33,6 +36,9 @@ app.register_blueprint(api, url_prefix='/api')  # Add all endpoints form the API
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") # Change this!
 jwt = JWTManager(app)
+
+
+
 
 
 # Handle/serialize errors like a JSON object
