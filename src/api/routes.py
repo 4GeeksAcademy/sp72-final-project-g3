@@ -57,23 +57,25 @@ def search_for_artist(artist_name):
         return None
     return json_result[0]
 
-result = search_for_artist('ADELE')
-print(result)
+# result = search_for_artist('ADELE')
+# print(result)
 # artists_id = result['id']
 
 
+@api.route('/spotify-albums/<album>', methods=['GET'])
 def search_for_track(album):
     token = get_token()
-    url = 'https://api.spotify.com/v1/albums'
+    url = f'https://api.spotify.com/v1/albums/{album}'
     headers = {'Authorization': 'Bearer ' + token}
-    query = f'?q={album}&type=album&limit=1'
+    query = f'?market=ES'
     query_url = url + query
     result = requests.get(query_url, headers=headers)
     json_result = json.loads(result.content)
-    return json_result
+    response_body = {'results': json_result}
+    return response_body, 200
 
-result = search_for_track('21jF5jlMtzo94wbxmJ18aa')
-print(result)
+# result = search_for_track('21jF5jlMtzo94wbxmJ18aa')
+# print(result)
 
 
 cloudinary.config(
