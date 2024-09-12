@@ -44,6 +44,7 @@ def get_token():
 """ def get_auth_header(token): 
     return {'Autorization': 'Bearer ' + token}"""
 
+@api.route('/spotify-artist/<artist_name>', methods=['GET'])
 def search_for_artist(artist_name):
     token = get_token()
     url = 'https://api.spotify.com/v1/search'
@@ -53,9 +54,10 @@ def search_for_artist(artist_name):
     query_url = url + query
     result = requests.get(query_url, headers=headers)
     json_result = json.loads(result.content)['artists']['items']
-    if len(json_result) == 0:
+    response_body = {'results': json_result}
+    if len(response_body) == 0:
         return None
-    return json_result[0]
+    return response_body, 200
 
 # result = search_for_artist('ADELE')
 # print(result)
@@ -63,7 +65,7 @@ def search_for_artist(artist_name):
 
 
 @api.route('/spotify-albums/<album>', methods=['GET'])
-def search_for_track(album):
+def search_for_album(album):
     token = get_token()
     url = f'https://api.spotify.com/v1/albums/{album}'
     headers = {'Authorization': 'Bearer ' + token}
