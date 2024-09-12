@@ -9,8 +9,8 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    rol = db.Column(db.Enum('user', 'artist', 'admin', name='rol'), nullable=False)
+    is_active = db.Column(db.Boolean(), default=True, unique=False, nullable=False)
+    rol = db.Column(db.Enum('fan', 'artist', 'admin', name='rol'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
     def __repr__(self):
@@ -19,7 +19,8 @@ class Users(db.Model):
     def serialize(self):
         return {'id': self.id,
                 'email': self.email,
-                'is_active': self.is_active}
+                'is_active': self.is_active,
+                'rol':self.rol}
 
 
 class Comments(db.Model):
@@ -28,11 +29,10 @@ class Comments(db.Model):
     body = db.Column(db.Text(), nullable=False)
     media_type = db.Column(db.Enum('img', 'png', 'mp4', 'link', name='media_type'), nullable=False)
     responses = db.Column(db.Text(), nullable=False)
-    status = db.Column(db.Boolean(), unique=False, nullable=False)
     date = db.Column(db.Date, unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to', lazy='select'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('comment_to', lazy='select'))
     cover_id = db.Column(db.Integer, db.ForeignKey('covers.id'))
     cover_to = db.relationship('Covers', foreign_keys=[cover_id], backref=db.backref('comment_to', lazy='select'))
 
@@ -45,7 +45,6 @@ class Comments(db.Model):
                 'body': self.body,
                 'media_type': self.media_type,
                 'responses': self.responses,
-                'status': self.status,
                 'date': self.date,
                 'created_at': self.created_at,
                 'comment_to': [row.serialize() for row in self.comment_to]}
@@ -53,13 +52,13 @@ class Comments(db.Model):
 
 class Fans(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    profile_picture = db.Column(db.String, unique=False, nullable=False)
-    about = db.Column(db.String(300), unique=False, nullable=False)
-    date_of_birth = db.Column(db.Date(), unique=True, nullable=False)
-    name = db.Column(db.String, unique=False, nullable=False)
-    nationality = db.Column(db.String, unique=False, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    profile_picture = db.Column(db.String, unique=False, nullable=True)
+    about = db.Column(db.String(300), unique=False, nullable=True)
+    date_of_birth = db.Column(db.Date(), unique=False, nullable=True)
+    name = db.Column(db.String, unique=False, nullable=True)
+    nationality = db.Column(db.String, unique=False, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('fans_to', lazy='select'))
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
@@ -76,7 +75,8 @@ class Fans(db.Model):
                 'name': self.name,
                 'nationality': self.nationality,
                 'created_at': self.created_at,
-                'updated_at': self.updated_at}
+                'updated_at': self.updated_at,
+                'user_id': self.user_id}
 
 
 class Votes(db.Model):
@@ -93,8 +93,7 @@ class Votes(db.Model):
         return f'<Vote {self.id} - User {self.user_id}>'
 
     def serialize(self):
-        return {
-            'id': self.id,
+        return {'id': self.id,
             'vote': self.vote,
             'vote_date': self.vote_date,
             'cover_to': [row.serialize() for row in self.cover_to]}
@@ -104,7 +103,7 @@ class Songs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=True)
     genre = db.Column(db.String, nullable=True)
-    releaseDate = db.Column(db.Date, nullable=False)
+    releaseDate = db.Column(db.Date, nullable=True)
     lyrics = db.Column(db.String, nullable=True)
     isrc = db.Column(db.String, unique=False, nullable=True)   
 
@@ -112,32 +111,31 @@ class Songs(db.Model):
         return f'<Song {self.id} - {self.title}>'
 
     def serialize(self):
-        return {
-            'id': self.id,
+        return {'id': self.id,
             'title': self.title,
             'genre': self.genre,
             'releaseDate': self.releaseDate,
             'lyrics': self.lyrics,
-            'isrc': self.isrc
-        }
+            'isrc': self.isrc}
 
 
 class Artists(db.Model):
     __tablename__ = 'artists'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=False, nullable=True)
     genre = db.Column(db.String, unique=False, nullable=True)
-    foundation = db.Column(db.Date, nullable=False)
+    foundation = db.Column(db.Date, nullable=True)
     country = db.Column(db.String, unique=False, nullable=True)
-    description = db.Column(db.String(600), nullable=False)
-    artwork = db.Column(db.String, unique=False, nullable=False)
-    website = db.Column(db.String, unique=False, nullable=False)
-    youtube = db.Column(db.String, unique=False, nullable=False)
-    instagram = db.Column(db.String, unique=False, nullable=False)
-    tiktok = db.Column(db.String, unique=False, nullable=False)
-    facebook = db.Column(db.String, unique=False, nullable=False)
-    twitter = db.Column(db.String, unique=False, nullable=False)
-    is_band = db.Column(db.Boolean(), unique=False, nullable=False)
-    members = db.Column(db.String, unique=False, nullable=False)
+    description = db.Column(db.String(600), nullable=True)
+    artwork = db.Column(db.String, unique=False, nullable=True)
+    website = db.Column(db.String, unique=False, nullable=True)
+    youtube = db.Column(db.String, unique=False, nullable=True)
+    instagram = db.Column(db.String, unique=False, nullable=True)
+    tiktok = db.Column(db.String, unique=False, nullable=True)
+    facebook = db.Column(db.String, unique=False, nullable=True)
+    twitter = db.Column(db.String, unique=False, nullable=True)
+    is_band = db.Column(db.Boolean(), unique=False, nullable=True)
+    members = db.Column(db.String, unique=False, nullable=True)
     status = db.Column(db.Boolean(), unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     record_label = db.Column(db.String, unique=False, nullable=True)
@@ -149,6 +147,7 @@ class Artists(db.Model):
 
     def serialize(self):
         return {'id':self.id,
+                'name':self.name,
                 'genre':self.genre,
                 'foundation':self.foundation,
                 'country':self.country,
@@ -169,7 +168,8 @@ class Artists(db.Model):
 
 class Covers(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    release_date = db.Column(db.Date, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    release_date = db.Column(db.Date, nullable=True)
     genre = db.Column(db.String, unique=False, nullable=True)
     description = db.Column(db.String, unique=False, nullable=True)
     published_url = db.Column(db.String, nullable=True)
@@ -184,8 +184,7 @@ class Covers(db.Model):
         return f'<Covers {self.id} - {self.artist_id} - {self.song_id}>'
 
     def serialize(self):
-        return {
-            'id': self.id,
+        return {'id': self.id,
             'release_date': self.release_date,
             'genre': self.genre,
             'description': self.description,
@@ -197,7 +196,7 @@ class Covers(db.Model):
 class Follows(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False)
-    update_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.id'))
     artist_to = db.relationship('Artists', foreign_keys=[artist_id], backref=db.backref('follow_to', lazy='select'))
     fan_id = db.Column(db.Integer, db.ForeignKey('fans.id'))
@@ -209,4 +208,6 @@ class Follows(db.Model):
     def serialize(self):
         return {"id": self.id,
                 "artist_id": self.artist_id,
-                "fan_id": self.fan_id}
+                "fan_id": self.fan_id,
+                "created_at": self.created_at,
+                "updated_at": self.updated_at}
