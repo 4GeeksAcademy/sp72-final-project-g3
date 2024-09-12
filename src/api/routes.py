@@ -44,6 +44,7 @@ def get_token():
 """ def get_auth_header(token): 
     return {'Autorization': 'Bearer ' + token}"""
 
+@api.route('/spotify-artist/<artist_name>', methods=['GET'])
 def search_for_artist(artist_name):
     token = get_token()
     url = 'https://api.spotify.com/v1/search'
@@ -52,28 +53,43 @@ def search_for_artist(artist_name):
     query = f'?q={artist_name}&type=artist&limit=1'
     query_url = url + query
     result = requests.get(query_url, headers=headers)
-    json_result = json.loads(result.content)['artists']['items']
-    if len(json_result) == 0:
+    json_result = json.loads(result.content) # ['artists']['items']
+    response_body = {'results': json_result}
+    if len(response_body) == 0:
         return None
-    return json_result[0]
+    return response_body, 200
 
-result = search_for_artist('ADELE')
-print(result)
+# result = search_for_artist('ADELE')
+# print(result)
 # artists_id = result['id']
 
 
-def search_for_track(album):
+@api.route('/spotify-albums/<album>', methods=['GET'])
+def search_for_album(album):
     token = get_token()
-    url = 'https://api.spotify.com/v1/albums'
+    url = f'https://api.spotify.com/v1/albums/{album}'
     headers = {'Authorization': 'Bearer ' + token}
-    query = f'?q={album}&type=album&limit=1'
+    query = f'?market=ES'
     query_url = url + query
     result = requests.get(query_url, headers=headers)
     json_result = json.loads(result.content)
-    return json_result
+    response_body = {'results': json_result}
+    return response_body, 200
 
-result = search_for_track('21jF5jlMtzo94wbxmJ18aa')
-print(result)
+# result = search_for_track('21jF5jlMtzo94wbxmJ18aa')
+# print(result)
+
+@api.route('spotify-tracks/<track>', methods=['GET'])
+def search_for_track(track):
+    token = get_token()
+    url = f'https://api.spotify.com/v1/tracks/{track}'
+    headers = {'Authorization': 'Bearer ' + token}
+    query = f'?market=ES'
+    query_url = url + query
+    result = requests.get(query_url, headers=headers)
+    json_result = json.loads(result.content)
+    response_body = {'results': json_result}
+    return response_body, 200
 
 
 cloudinary.config(
