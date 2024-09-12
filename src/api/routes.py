@@ -95,64 +95,7 @@ def search_for_track(track):
 cloudinary.config(
     cloud_name = os.getenv("ClOUD_NAME"),
     api_key = os.getenv("CLOUD_KEY"),
-    api_secret = os.getenv("CLOUD_API_SECRET")
-)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    api_secret = os.getenv("CLOUD_API_SECRET"))
 
 
 @api.route('/users', methods=['GET'])
@@ -809,5 +752,3 @@ def upload_img():
     print(result['secure_url'])
     response_body['results'] = result['url']
     return response_body, 200
-
-
