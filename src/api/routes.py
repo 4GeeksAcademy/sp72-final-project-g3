@@ -100,61 +100,6 @@ cloudinary.config(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @api.route('/users', methods=['GET'])
 def handle_users():
     response_body = {}
