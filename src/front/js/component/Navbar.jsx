@@ -8,7 +8,7 @@ export const Navbar = () => {
 	return (
 		<nav className="navbar navbar-expand-lg bg-body-tertiary">
 			<div className="container-fluid d-flex">
-				<Link to="/pages/home" className="navbar-logo" >
+				<Link to="/" className="navbar-logo" >
 					<img src={logo} width="120" height="75"/>
 					<span className="logo-text">SOUNDEX</span>
 				</Link>
@@ -18,13 +18,13 @@ export const Navbar = () => {
 				<div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
 					<ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
 						<li className="nav-item">
-							<Link to="/pages/loginsignup" className="nav-link" href="#">Log in / SignUp</Link>
+							<Link to="/loginsignup" className="nav-link">Log in / SignUp</Link>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link"  href="#">Covers</a>
+							<Link className="nav-link"  to="#">Covers</Link>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link" href="#">Artist</a>
+							<Link className="nav-link" to="#">Artist</Link>
 						</li>
 					</ul>
 				</div>
