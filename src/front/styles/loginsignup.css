@@ -1,0 +1,58 @@
+.nav-link{
+    text-decoration: none;
+    color: aliceblue;
+    background-color: darkblue;
+    cursor: pointer;
+}
+
+.nav-link.active-tab {
+    background-color: aliceblue; 
+    color: black; 
+  }
+
+.nav-link:hover {
+    background-color: inherit; 
+    color: inherit;            
+    cursor: pointer;   
+    border: none;        
+  }
+
+.card-login {
+    width: 100%;
+    max-width: 25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px auto auto;
+    height: auto;
+    border-radius: 15px;
+    background-color: #405D69;
+    padding: 20px;
+  }
+
+.container-fluid {
+    padding: 0;
+  }
+  
+.image-container {
+    padding: 0;
+  }
+
+.img-fluid {
+width: 90vh;
+height: 100vh;
+}
+
+@media (max-width: 768px) {
+.image-container {
+      display: none; 
+    }
+  
+.right-side {
+      width: 100%; 
+    }
+  
+.card-login {
+      margin-top: 20px; 
+    }
+  }
