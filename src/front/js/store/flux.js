@@ -78,10 +78,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const options = {
 					method: "POST",
 					body: JSON.stringify(dataToSend),
-					headers:{
-						'content-Type': 'aplication/json',
+					headers: {
+					  'Content-Type': 'application/json',
 					}
-				}
+				  }				  
 				const response = await fetch(uri, options)
 				if (!response.ok){
 					console.log("WTF nothing to see here", response.status, response.statusText);
@@ -98,11 +98,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const options = {
 					method: "POST",
 					body: JSON.stringify(dataToSend),
-					headers:{
-						'content-Type': 'aplication/json',
-
+					headers: {
+					  'Content-Type': 'application/json',
 					}
-				}
+				  }				  
 				const response = await fetch(uri, options)
 				if (!response.ok){
 					console.log("WTF nothing to see here", response.status, response.statusText);
