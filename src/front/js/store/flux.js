@@ -8,7 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				artist: [],
 				admin: [],
 			},
-			users: [],
+			currentUser: [],
 			user: [],
 			login: [],
 			signup: [],
@@ -72,13 +72,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json()
 				setStore({user: data.user})
 			},
-			login: async () => {
+			login: async (email, password) => {
+				const dataToSend = {email, password}
 				const uri = `${process.env.BACKEND_URL}/api/login`
 				const options = {
 					method: "POST",
+					body: JSON.stringify(dataToSend),
 					headers:{
 						'content-Type': 'aplication/json',
-						"Authorization": `Bearer ${token}`
 					}
 				}
 				const response = await fetch(uri, options)
@@ -87,16 +88,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const data = await response.json()
-				setStore({
-					user: data.user,})
+				setStore({currentUser: data.results})
+				localStorage.setItem("token", data.access_token);
+				localStorage.setItem("user", data.results);
 			},
-			signUp: async () => {
+			signUp: async (email, password, rol) => {
+				const dataToSend = {email, password, rol}
 				const uri = `${process.env.BACKEND_URL}/api/signup`
 				const options = {
 					method: "POST",
+					body: JSON.stringify(dataToSend),
 					headers:{
 						'content-Type': 'aplication/json',
-						"Authorization": `Bearer ${token}`
+
 					}
 				}
 				const response = await fetch(uri, options)
@@ -105,12 +109,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const data = await response.json()
-				setStore({
-					user: data.user,
-					rol: data.rol
-				})
+				setStore({currentUser: data})
+				localStorage.setItem("token", data.access_token);
+				localStorage.setItem("user", data.results);
 			},
 			getArtists: async () => {
+				
 				const uri = `${process.env.BACKEND_URL}/api/artists`
 				const options = {
 					method: "GET"
@@ -153,6 +157,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json()
 				setStore({artist: data.artist})				
 			},
+			deleteArtist: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/users/${artist_id}`
+				const options = {
+					method: "DELETE",
+					headers:{
+						'content-Type': 'aplication/json',
+						"Authorization": `Bearer ${token}`
+					}
+				}
+				const response = await fetch(uri, options)
+				if (!response.ok){
+					console.log("WTF nothing to see here", response.status, response.statusText);
+					return
+				}
+				const data = await response.json()
+				setStore({artist: data.artist})
+			},
+
 		}
 	};
 };
