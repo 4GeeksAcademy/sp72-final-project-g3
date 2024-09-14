@@ -1,0 +1,39 @@
+.navbar{
+    background:#374F5A;
+    padding-top:0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    background-color: none;
+  }
+
+.logo-text{
+    text-decoration: none;
+    color: whitesmoke;
+    letter-spacing: 4px;
+    font-weight: 700;
+  }
+
+.nav-link{
+  text-decoration: none;
+  color: whitesmoke;
+  letter-spacing: 2px;
+  background-color: transparent !important;
+}
+
+.nav-link:hover {
+  text-decoration: none;
+  color: whitesmoke;
+}
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  margin-left: auto; /* Esto empuja los enlaces hacia la derecha */
+  gap: 8px; /* Espaciado entre los elementos */
+}
