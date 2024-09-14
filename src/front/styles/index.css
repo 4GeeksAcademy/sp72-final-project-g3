@@ -1,3 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+body{
+    background: #14181C;
+}
+
+.hero-section {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;  
+    padding-left: 2rem;  
+    color: white;
+    position: relative;
+  }
+  
+.hero-content {
+    max-width: 600px;  /* Ajusta el ancho máximo del contenido */
+  }
+
+.card-login{
+    background: #405D69;
+}
+
+.card-container{
+    display: flex;
+    justify-content: center; 
+    flex-wrap: wrap; 
+    gap: 20px; 
+    padding: 20px; 
+}
+
+.card{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 20rem;
+    background-color: #1E1E1E;
+    color: white;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 25px;
+}
+
+/* Estilo para la imagen de la tarjeta */
+.card-img-left {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-right: 5px;
+}
+
+/* Contenedor del contenido de la tarjeta */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+/* Estilo del título de la tarjeta */
+.card-title {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+/* Estilo del género musical */
+.card-genre {
+    font-size: 1rem;
+    margin: 5px 0;
+}
+
+/* Estilo para el enlace del artista */
+.card-artist {
+    text-decoration: underline;
+    font-size: 1.2rem;
+    color: white;
+}
