@@ -4,6 +4,7 @@ import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
 import { CoverCard } from "../component/CoverCard.jsx";
 import { HeroSection } from "../component/HeroSection.jsx";
+import { ReviewCard } from "../component/ReviewCard.jsx";
 
 
 export const Home = () => {
@@ -14,6 +15,7 @@ export const Home = () => {
 			<h1>Hello Rigo!!</h1>
 			<HeroSection />
 			<CoverCard />
+			<ReviewCard />
 			<p>
 				<img src={rigoImageUrl} />
 			</p>

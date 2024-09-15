@@ -1,3 +1,5 @@
+import { PiFileCThin } from "react-icons/pi";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -17,7 +19,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			songs: [],
 			song: [],
 			spotify: [],
-			comments: null,
+			votes: [],
+			comments: [],
 			image: []
 		},
 		actions: {
@@ -172,6 +175,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				const data = await response.json()
 				setStore({artist: data.artist})
+			},
+			getComments: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/comments`
+				const options = {
+					method: "GET"
+				};
+				const response = await fetch(uri, options)
+				if (!response.ok){
+					console.log('Error loading message from backend", reponse.status, response.statusText')
+					return
+				}
+				const data = await response.json();
+				console.log(data);
+				setStore({ comments: data })
 			},
 
 		}

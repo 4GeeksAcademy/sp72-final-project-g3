@@ -82,3 +82,9 @@ body{
     font-size: 1.2rem;
     color: white;
 }
+
+.card-review {
+    background-color: #566877;
+    border-radius: 10px;
+    padding: 20px;
+  }
