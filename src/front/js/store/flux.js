@@ -190,6 +190,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(data);
 				setStore({ comments: data })
 			},
+			getCover: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/covers`
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options)
+				if (!response.ok){
+					console.log('Error loading message from backend", reponse.status, response.statusText')
+					return
+				}
+				const data = await response.json();
+				console.log(data);
+				setStore({ covers: data })
+				
+			},
 
 		}
 	};
