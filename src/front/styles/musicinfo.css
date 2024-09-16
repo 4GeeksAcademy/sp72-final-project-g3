@@ -1,0 +1,68 @@
+.music-card {
+    display: flex;
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 800px;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+  
+.album-image {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+.card-content {
+    margin-left: 20px;
+    flex: 1;
+  }
+  
+.album-title {
+    font-size: 36px;
+    margin-bottom: 0;
+  }
+  
+.band-name {
+    font-size: 24px;
+    color: #b3b3b3;
+  }
+  
+.album-genre {
+    font-size: 16px;
+    color: #b3b3b3;
+    margin-bottom: 20px;
+  }
+  
+.album-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #cccccc;
+  }
+  
+.rating {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+.stars {
+    display: flex;
+    margin-right: 10px;
+  }
+  
+.stars span {
+    font-size: 24px;
+    color: #ffcc00;
+  }
+  
+.stars span.filled {
+    color: #ffcc00;
+  }
+  
+.rating-number {
+    font-size: 18px;
+    color: #cccccc;
+  }

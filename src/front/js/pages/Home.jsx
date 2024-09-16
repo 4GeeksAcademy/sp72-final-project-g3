@@ -5,6 +5,7 @@ import "../../styles/home.css";
 import { CoverCard } from "../component/CoverCard.jsx";
 import { HeroSection } from "../component/HeroSection.jsx";
 import { ReviewCard } from "../component/ReviewCard.jsx";
+import { MusicInfo } from "../component/MusicInfo.jsx"
 
 
 export const Home = () => {
@@ -15,6 +16,7 @@ export const Home = () => {
 			<h1>Hello Rigo!!</h1>
 			<HeroSection />
 			<CoverCard />
+			<MusicInfo />
 			<ReviewCard />
 			<p>
 				<img src={rigoImageUrl} />
