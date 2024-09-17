@@ -185,12 +185,14 @@ class Covers(db.Model):
 
     def serialize(self):
         return {'id': self.id,
+            'name': self.name,
             'release_date': self.release_date,
             'genre': self.genre,
             'description': self.description,
             'published_url': self.published_url,
             'valuation': self.valuation,
-            'comment_to': [row.serialize() for row in self.comment_to]}
+            'comment_to': [row.serialize() for row in self.comment_to],
+            'artist_name': self.artist_to.serialize()["name"]}
 
 
 class Follows(db.Model):

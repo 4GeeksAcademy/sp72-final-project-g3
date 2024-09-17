@@ -33,7 +33,7 @@ export const ReviewCard = () => {
                 {store.comments.map((item) =>   
                     <div key={item.id}> 
                     <VotesRating rating= '5' /> 
-                    <h5 className="card-title-review text-white">Título de la reseña{item.title}</h5>
+                    <h5 className="card-title-review text-white">{item.title}</h5>
                     <p className="card-text-review">{item.body}</p>
                     <div className="d-flex align-items-center mt-4">
                         <img

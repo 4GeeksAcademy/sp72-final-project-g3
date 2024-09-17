@@ -10,6 +10,7 @@ import { Footer } from "./component/Footer.jsx";
 import { Home } from "./pages/Home.jsx";
 import { Error404 } from "./pages/Error404.jsx";
 import { LoginSignup } from "./pages/LoginSignup.jsx";
+import { Cover } from "./pages/Cover.jsx";
 
 
 // Create your first component
@@ -28,6 +29,7 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Error404/>} path="*"/>
                         <Route element={<LoginSignup/>} path="/loginsignup"/>
+                        <Route element={<Cover/>} path="/cover"/>
                     </Routes>
                     <Footer />
                 </ScrollToTop>

@@ -15,6 +15,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			login: [],
 			signup: [],
 			covers: [],
+			populars: [],
 			cover:[],
 			songs: [],
 			song: [],
@@ -169,7 +170,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const uri = `${process.env.BACKEND_URL}/api/comments`
 				const options = {
 					method: "GET"
-				};
+				}
 				const response = await fetch(uri, options)
 				if (!response.ok){
 					console.log('Error loading message from backend", reponse.status, response.statusText')
@@ -178,7 +179,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json();
 				setStore({ comments: data.results })
 			},
-			getCover: async () => {
+			getCovers: async () => {
 				const uri = `${process.env.BACKEND_URL}/api/covers`
 				const options = {
 					method: 'GET'
@@ -189,9 +190,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const data = await response.json();
-				console.log(data);
-				setStore({ covers: data })
+				setStore({ covers: data.results })
+				if (getStore().covers.lenght <= 3){
+					setStore({populars: data.results})
+				} else {
+					const lastIndex = Math.floor(Math.random() * (getStore().covers.length - 2)) + 2;
+					const populars = [data.results[0], data.results[1], data.results[lastIndex]];
+					setStore({populars: populars})
+					
+				}
 				
+			},
+			getCover: async (cover_id) => {
+				const uri = `${process.env.BACKEND_URL}/api/covers/${cover_id}`
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options)
+				if (!response.ok){
+					console.log('Error loading message from backend", reponse.status, response.statusText')
+					return
+				};
+				const data = await response.json();
+				console.log(data);
+				setStore({ cover: data.results })
 			},
 
 		}
