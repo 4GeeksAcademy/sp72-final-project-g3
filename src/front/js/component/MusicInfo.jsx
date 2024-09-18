@@ -10,11 +10,13 @@ export const MusicInfo = () => {
   const { store } = useContext(Context)
 
   return (
-    <div className="music-card">
+    <div className="container component-container ">
+      <div className="row">
+    <div className="music-card col-md-12 col-sm-6">
       {store.cover.genre ?
-        <div key={store.cover.id}>
+        <div className="music-info-container" key={store.cover.id}>
           <img src={image} alt="" className="album-image" />
-          <div className="card-content">
+          <div className="card-content col-sm-12">
             <h1 className="album-title">{store.cover.name}</h1>
             <h2 className="band-name">{store.artist_name}</h2>
             <p className="album-genre">{store.cover.genre}</p>
@@ -34,6 +36,8 @@ export const MusicInfo = () => {
         :
         ''
       }
+    </div>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { FaStar, FaRegStar } from 'react-icons/fa';
+import rigo from '../../img/rigo-baby.jpg';
 import '../../styles/index.css';
 import { Context } from '../store/appContext.js';
 
@@ -37,7 +38,7 @@ export const ReviewCard = () => {
                     <p className="card-text-review">{item.body}</p>
                     <div className="d-flex align-items-center mt-4">
                         <img
-                            src=''
+                            src={rigo}
                             alt="Profile"
                             className="rounded-circle"
                             style={{ width: '50px', height: '50px', objectFit: 'cover' }}

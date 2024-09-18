@@ -1,11 +1,22 @@
+.component-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .music-card {
   display: flex;
   align-items: center;
-  background-color: #1a1a2e; /* Azul oscuro */
   padding: 20px;
   border-radius: 10px;
   color: white;
-  width: 100%; /* Asegúrate de que la tarjeta ocupe todo el ancho disponible */
+}
+
+.music-info-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  color: white; /* Color del texto */
 }
 
 .album-image {
@@ -19,6 +30,7 @@
 .card-content {
   display: flex;
   flex-direction: column;
+  text-align: left; /* Alinear el texto a la izquierda */
 }
 
 .album-title {
