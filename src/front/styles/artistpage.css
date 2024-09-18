@@ -1,0 +1,78 @@
+.artist-page {
+    background-color: #14181C;
+    color: white;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+
+.artist-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.artist-image img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin-right: 20px;
+}
+
+.artist-info {
+    line-height: 1.5;
+}
+
+.artist-info h1 {
+    margin: 0;
+}
+
+.about-section {
+    background-color: #405D69;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.tags span {
+    background-color: #14181C;
+    color: white;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.tracks-section {
+    background-color: #405D69;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.track-item {
+    background-color: #14181C;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.track-item p {
+    margin: 0;
+}
+
+.artist-actions {
+    margin-top: 20px;
+}
+
+.artist-actions button {
+    background-color: #405D69;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.artist-actions button:hover {
+    background-color: #14181C;
+}

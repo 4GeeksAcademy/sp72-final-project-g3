@@ -19,7 +19,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			spotify: [],
 			comments: null,
 			image: null,
-			uploadStatus: null
+			uploadStatus: null,
+			artist: {}
 		},
 		actions: {
 			/*getMessage: async () => {
@@ -126,6 +127,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.setItem("token", data.access_token);
 				localStorage.setItem("user", data.results);
 			},
+			getCurrentUser: async () => {
+                const uri = `${process.env.BACKEND_URL}/auth/user`;
+                const options = {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                };
+                const response = await fetch(uri, options);
+                if (!response.ok) {
+                    console.error("Error fetching current user:", response.status, response.statusText);
+                    return;
+                }
+                const data = await response.json();
+                setStore({ currentUser: data.user });
+            },
 			getArtists: async () => {
 
 				const uri = `${process.env.BACKEND_URL}/api/artists`
@@ -140,7 +157,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json()
 				setStore({ artists: data.artists })
 			},
-			getArtist: async () => {
+			getArtist: async (artist_id) => {
 				const uri = `${process.env.BACKEND_URL}/api/users/${artist_id}`
 				const options = {
 					method: "GET"
@@ -151,41 +168,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const data = await response.json()
-				setStore({ artist: data.artist })
+				setStore({ artist: data.results })
 			},
-			editArtist: async () => {
+			editArtist: async (artist_id, updatedArtistData) => {
 				const uri = `${process.env.BACKEND_URL}/api/users/${artist_id}`
 				const options = {
 					method: "PUT",
 					headers: {
 						'content-Type': 'aplication/json',
-						"Authorization": `Bearer ${token}`
-					}
-				}
+						"Authorization": `Bearer ${localStorage.getItem('token')}`
+					},
+					body: JSON.stringify(updatedArtistData),
+				};
 				const response = await fetch(uri, options)
 				if (!response.ok) {
 					console.log("WTF nothing to see here", response.status, response.statusText);
-					return
+					return;
 				}
 				const data = await response.json()
-				setStore({ artist: data.artist })
+				setStore({ artist: data.results })
+				return true;
 			},
-			deleteArtist: async () => {
+			deleteArtist: async (artist_id) => {
 				const uri = `${process.env.BACKEND_URL}/api/users/${artist_id}`
 				const options = {
 					method: "DELETE",
 					headers: {
-						'content-Type': 'aplication/json',
-						"Authorization": `Bearer ${token}`
+						"Authorization": `Bearer ${localStorage.getItem('token')}`,
 					}
 				}
 				const response = await fetch(uri, options)
 				if (!response.ok) {
 					console.log("WTF nothing to see here", response.status, response.statusText);
-					return
+					return;
 				}
-				const data = await response.json()
-				setStore({ artist: data.artist })
+				console.log("Artist deleted")
 			},
 
 		}
