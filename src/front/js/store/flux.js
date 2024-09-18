@@ -10,7 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				artist: [],
 				admin: [],
 			},
-			currentUser: [],
+			currentUser: null,
 			user: [],
 			login: [],
 			signup: [],
@@ -224,6 +224,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json();
 				console.log(data);
 				setStore({ cover: data.results })
+			},
+			Logout: () => {
+				setStore({currentUser: ''})
+				localStorage.removeItem("token");
+				localStorage.removeItem("user");
 			},
 
 		}
