@@ -19,7 +19,7 @@ body{
   }
   
 .hero-content {
-    max-width: 600px;  /* Ajusta el ancho máximo del contenido */
+    max-width: 600px;  
   }
 
 .card-login{
@@ -32,6 +32,50 @@ body{
     flex-wrap: wrap; 
     gap: 20px; 
     padding: 20px; 
+}
+
+.review-card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;  
+    gap: 20px; 
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.card-review {
+    background-color: #1c1c1c; 
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); 
+}
+
+.card-title-review {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.card-text-review {
+    font-size: 1rem;
+    color: #cccccc;
+}
+
+/* Ajuste de la imagen del usuario */
+img.rounded-circle {
+    border: 2px solid #ffffff; 
+}
+
+/* Ajuste de la fecha */
+.text-secondary {
+    font-size: 0.9rem;
+    color: #888888;
+}
+
+/* Ajuste de la puntuación (estrellas) */
+.text-white {
+    color: #f39c12; 
 }
 
 .card{
@@ -84,8 +128,4 @@ body{
     color: white;
 }
 
-.card-review {
-    background-color: #566877;
-    border-radius: 10px;
-    padding: 20px;
-  }
+
