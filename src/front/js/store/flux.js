@@ -1,3 +1,5 @@
+import { PiFileCThin } from "react-icons/pi";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -8,33 +10,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 				artist: [],
 				admin: [],
 			},
-			currentUser: [],
+			currentUser: null,
 			user: [],
 			login: [],
 			signup: [],
 			covers: [],
-			cover: [],
+			populars: [],
+			cover:[],
 			songs: [],
 			song: [],
 			spotify: [],
+			votes: [],
+			mostcomments: [],
+			image: [],
 			comments: null,
 			image: null,
 			uploadStatus: null,
 			artist: {}
 		},
 		actions: {
-			/*getMessage: async () => {
-				const uri = `${process.env.BACKEND_URL}/api/hello`
-				const options = { headers: { 'Content-types': 'application/json' } }
-				const response = await fetch(uri, options)
-				if (!response.ok) {
-					console.log("Error loading message from backend", response.status, response.statusText);
-					return;
-				}
-				const data = await response.json()
-				setStore({ message: data.message })
-				return data;
-			},*/
 			postImage: async (imageFile) => {
 				const uri = `${process.env.BACKEND_URL}/api/upload`;
 				const formData = new FormData();
@@ -203,6 +197,69 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return;
 				}
 				console.log("Artist deleted")
+			},
+			getComments: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/comments`
+				const options = {
+					method: "GET"
+				}
+				const response = await fetch(uri, options)
+				if (!response.ok){
+					console.log('Error loading message from backend", response.status, response.statusText')
+					return
+				}
+				const data = await response.json();
+				setStore({ comments: data.results })
+				if (getStore().comments.length <= 3){
+					setStore({mostcomments: data.results})
+				} else {
+					const lastIndex = Math.floor(Math.random() * (getStore().comments.length -2)) + 2;
+					const mostcomments = [data.results[0], data.results[1], data.results[lastIndex]];
+					setStore({mostcomments: mostcomments})
+
+				}
+			
+			},
+			getCovers: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/covers`
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options)
+				if (!response.ok){
+					console.log('Error loading message from backend", reponse.status, response.statusText')
+					return
+				}
+				const data = await response.json();
+				setStore({ covers: data.results })
+				if (getStore().covers.length <= 3){
+					setStore({populars: data.results})
+				} else {
+					const lastIndex = Math.floor(Math.random() * (getStore().covers.length - 2)) + 2;
+					const populars = [data.results[0], data.results[1], data.results[lastIndex]];
+					setStore({populars: populars})
+					
+				}
+				
+			},
+			getCover: async (cover_id) => {
+				const uri = `${process.env.BACKEND_URL}/api/covers/${cover_id}`
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options)
+				if (!response.ok){
+					console.log('Error loading message from backend", reponse.status, response.statusText')
+					return
+				};
+				const data = await response.json();
+				console.log(data);
+				setStore({ cover: data.results })
+			},
+			Logout: () => {
+				setStore({currentUser: ''})
+				localStorage.removeItem("token");
+				localStorage.removeItem("user");
 			},
 
 		}

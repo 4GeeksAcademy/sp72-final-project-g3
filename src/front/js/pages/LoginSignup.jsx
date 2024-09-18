@@ -32,7 +32,7 @@ export const LoginSignup = () => {
     const [action, setAction] = useState('Sign Up');
 
     return (
-        <div className='Container-fluid'>
+        <div className='Container'>
             <div className="row">
                 <div className="col-md-6 image-container">
                     <img src={size_img} className="img-fluid"></img>
