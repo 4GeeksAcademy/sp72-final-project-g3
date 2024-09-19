@@ -18,6 +18,8 @@ import { CoverSecond } from "./pages/CoverSecond.jsx";
 import { CoverThird } from "./pages/CoverThird.jsx";
 import { ArtistProfileSecond } from "./component/ArtistProfileSecond.jsx";
 import { ArtistProfileThird } from "./component/ArtistProfileThird.jsx";
+import { PoliticasDeCoikies } from "./pages/PoliticasDeCookies.jsx";
+
 
 
 // Create your first component
@@ -44,6 +46,7 @@ const Layout = () => {
                         <Route element={<ArtistProfileSecond />} path="/artistprofile&id=2"/>
                         <Route element={<CoverThird/>} path="/cover&id=3"/>
                         <Route element={<ArtistProfileThird />} path="/artistprofile&id=3"/>
+                        <Route element={<PoliticasDeCoikies/>} path="/politicasdecookies" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
