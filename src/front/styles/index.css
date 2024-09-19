@@ -5,7 +5,7 @@
     General Styles used on every website (Don't Repeat Yourself)
 */
 body{
-    background: #14181C;
+    background: #14181C !important;
 }
 
 .hero-section {
