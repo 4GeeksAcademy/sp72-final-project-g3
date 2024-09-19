@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import logo from '../../img/logo.png';
 import '../../styles/navbar.css';
+import { Context } from "../store/appContext";
 
 
 export const Navbar = () => {
+
+	const { store, actions } = useContext(Context)
+	const Logout = () => {
+		actions.Logout()
+	}  
+
+
 	return (
 		<nav className="navbar navbar-expand-lg bg-body-tertiary">
 			<div className="container-fluid d-flex">
-				<Link to="/pages/home" className="navbar-logo" >
+				<Link to="/" className="navbar-logo" >
 					<img src={logo} width="120" height="75"/>
 					<span className="logo-text">SOUNDEX</span>
 				</Link>
@@ -18,13 +26,10 @@ export const Navbar = () => {
 				<div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
 					<ul className="navbar-nav mb-2 mb-lg-0 ms-auto">
 						<li className="nav-item">
-							<Link to="/pages/loginsignup" className="nav-link" href="#">Log in / SignUp</Link>
-						</li>
-						<li className="nav-item">
-							<a className="nav-link"  href="#">Covers</a>
-						</li>
-						<li className="nav-item">
-							<a className="nav-link" href="#">Artist</a>
+							{store.currentUser ? 
+							<Link to='#' onClick={()=>Logout()} className="nav-link">LogOut</Link>
+							:
+							<Link to="/loginsignup" className="nav-link" href="#">Log in / SignUp</Link>}
 						</li>
 					</ul>
 				</div>

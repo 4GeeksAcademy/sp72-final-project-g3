@@ -1,0 +1,40 @@
+.info-cover {
+    display: flex;
+    align-items: center; /* Centra verticalmente */
+    justify-content: center; /* Centra horizontalmente */
+    padding: 40px;
+    background-color: #2f3b45; /* Color de fondo */
+  }
+  
+  .info-image {
+    max-width: 400px; /* Aumenta el tamaño de la imagen */
+    height: auto;
+    margin-right: 80px; /* Espacio entre la imagen y el texto */
+    border-radius: 15px;
+  
+  }
+  
+  .info-content {
+    max-width: 600px; /* Ajusta el ancho máximo del contenido */
+    text-align: left; /* Alineación izquierda del texto */
+    margin-right: -80px;
+  }
+  
+  .info-heading {
+    font-size: 2.5em;
+    color: #ffffff; /* Cambia el color del título */
+  }
+  
+  .info-subheading {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #dddddd;
+  }
+  
+  .info-text {
+    font-size: 1.1em;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    color: #cccccc;
+  }
+  

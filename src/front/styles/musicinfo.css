@@ -1,0 +1,82 @@
+.component-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.music-card {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+}
+
+.music-info-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  color: white; 
+}
+
+.album-image {
+  width: 300px; 
+  height: 300px;
+  margin-right: 40px; 
+  border-radius: 10px; 
+  object-fit: cover;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left; 
+}
+
+.album-title {
+  font-size: 36px; 
+  margin: 0;
+  color: white;
+}
+
+.band-name {
+  font-size: 24px; 
+  color: #b3b3b3;
+  margin-bottom: 10px; 
+}
+
+.album-genre {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.album-description {
+  font-size: 16px;
+  margin-bottom: 20px;
+  max-width: 600px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.rating-number {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffcc00; 
+  margin-left: 10px; 
+}
+
+.stars {
+  color: #ffcc00; 
+  font-size: 30px; 
+  display: flex;
+  align-items: center;
+}
+
+.stars i {
+  margin-right: 5px; 
+}

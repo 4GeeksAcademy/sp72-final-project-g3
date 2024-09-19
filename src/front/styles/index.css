@@ -17,9 +17,17 @@ body{
     color: white;
     position: relative;
   }
+
+  .btn-hero{
+    text-decoration: none;
+    color: whitesmoke;
+    letter-spacing: 2px;
+    Cursor: pointer; 
+    Text-Decoration: None !important; 
+  }
   
 .hero-content {
-    max-width: 600px;  /* Ajusta el ancho máximo del contenido */
+    max-width: 600px;  
   }
 
 .card-login{
@@ -34,6 +42,50 @@ body{
     padding: 20px; 
 }
 
+.review-card-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;  
+    gap: 20px; 
+    padding: 20px;
+    flex-wrap: wrap;
+}
+
+.card-review {
+    background-color: #1c1c1c; 
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 600px; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); 
+}
+
+.card-title-review {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.card-text-review {
+    font-size: 1rem;
+    color: #cccccc;
+}
+
+/* Ajuste de la imagen del usuario */
+img.rounded-circle {
+    border: 2px solid #ffffff; 
+}
+
+/* Ajuste de la fecha */
+.text-secondary {
+    font-size: 0.9rem;
+    color: #888888;
+}
+
+/* Ajuste de la puntuación (estrellas) */
+.text-white {
+    color: #f39c12; 
+}
+
 .card{
     display: flex;
     flex-direction: row;
@@ -46,6 +98,7 @@ body{
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 25px;
+    cursor: pointer;
 }
 
 /* Estilo para la imagen de la tarjeta */
@@ -82,3 +135,12 @@ body{
     font-size: 1.2rem;
     color: white;
 }
+
+.cover-semanal{
+    color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+
