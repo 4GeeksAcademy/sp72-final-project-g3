@@ -5,6 +5,8 @@ import { HeroSection } from "../component/HeroSection.jsx";
 import { ReviewCard } from "../component/ReviewCard.jsx";
 import { CoverCard } from "../component/CoverCard.jsx";
 import { ImageUploader } from "../component/ImageUploader.jsx";
+import { ExtraInfo } from "../component/ExtraInfo.jsx";
+import { CoverCardTrial } from "../component/CoverCardTrial.jsx";
 import { InfoCover } from "../component/InforCover.jsx";
 
 
@@ -18,8 +20,9 @@ export const Home = () => {
 	}
 
 	return (
-		<div className="text-center mt-5">
+		<div className="text-center">
 			<HeroSection />
+			<CoverCardTrial />
 			<InfoCover />
 			<CoverCard />
 		</div>

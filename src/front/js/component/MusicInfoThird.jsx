@@ -2,10 +2,11 @@ import React, { useContext, useState } from "react";
 import '../../styles/musicinfo.css';
 import image from '../../img/image.jpg';
 import { Context } from "../store/appContext";
+import coverthird from '../../img/coverthird.jpg';
 
 
 
-export const MusicInfo = () => {
+export const MusicInfoThird = () => {
 
   const { store } = useContext(Context);
   const [hover, setHover] = useState(null);
@@ -19,14 +20,14 @@ export const MusicInfo = () => {
     <div className="container component-container ">
       <div className="row">
         <div className="music-card col-md-12 col-sm-6">
-          {store.cover.genre ?
-            <div className="music-info-container" key={store.cover.id}>
-              <img src={store.cover.published_url} alt="" className="album-image" />
+            <div className="music-info-container">
+              <img src={coverthird} alt="" className="album-image" />
               <div className="card-content col-sm-12">
-                <h1 className="album-title">{store.cover.name}</h1>
-                <h2 className="band-name">{store.artist_name}</h2>
-                <p className="album-genre">{store.cover.genre}</p>
-                <p className="album-description">{store.cover.description}</p>
+                <h1 className="album-title">Shape of you</h1>
+                <h2 className="band-name">Oswaldo Briseño</h2>
+                <p className="album-genre">Pop</p>
+                <p className="album-description">
+                Imagina un cover animado de "Shape of You" interpretado con guitarra española, donde cada rasgueo de las cuerdas cobra vida visualmente. La escena se desarrolla en un atardecer cálido en una plaza española, con edificios antiguos y coloridos de fondo. La guitarra española reemplaza el ritmo moderno del original por un sonido más orgánico y melódico, con cada nota acentuada por los ecos de la madera del instrumento.</p>
                 <div className="rating">
                   <div className="fs-2 text-center">
                     {[...Array(5)].map((star, i) => {
@@ -41,13 +42,10 @@ export const MusicInfo = () => {
                       );
                     })}
                   </div>
-                  <p className="rating-number">{store.cover.valuation} rating</p>
+                  <p className="rating-number">2 rating</p>
                 </div>
               </div>
             </div>
-            :
-            ''
-          }
         </div>
       </div>
     </div>

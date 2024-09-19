@@ -2,10 +2,11 @@ import React, { useContext, useState } from "react";
 import '../../styles/musicinfo.css';
 import image from '../../img/image.jpg';
 import { Context } from "../store/appContext";
+import coverfirst from '../../img/coverfirst.jpg';
 
 
 
-export const MusicInfo = () => {
+export const MusicInfoFirst = () => {
 
   const { store } = useContext(Context);
   const [hover, setHover] = useState(null);
@@ -19,14 +20,13 @@ export const MusicInfo = () => {
     <div className="container component-container ">
       <div className="row">
         <div className="music-card col-md-12 col-sm-6">
-          {store.cover.genre ?
-            <div className="music-info-container" key={store.cover.id}>
-              <img src={store.cover.published_url} alt="" className="album-image" />
+            <div className="music-info-container">
+              <img src={coverfirst} alt="" className="album-image" />
               <div className="card-content col-sm-12">
-                <h1 className="album-title">{store.cover.name}</h1>
-                <h2 className="band-name">{store.artist_name}</h2>
-                <p className="album-genre">{store.cover.genre}</p>
-                <p className="album-description">{store.cover.description}</p>
+                <h1 className="album-title">Fly me to the moon</h1>
+                <h2 className="band-name">Marcel Rivero</h2>
+                <p className="album-genre">Jazz and R&B</p>
+                <p className="album-description">Simply put, Frank Sinatra's “Fly Me to the Moon” is centered on the singer being deeply in love. And the title is a metaphor which is based on how he feels about his significant other. Or “fly me to the moon” is a fancy way of saying that being with his lover makes him feel euphoric.</p>
                 <div className="rating">
                   <div className="fs-2 text-center">
                     {[...Array(5)].map((star, i) => {
@@ -41,13 +41,10 @@ export const MusicInfo = () => {
                       );
                     })}
                   </div>
-                  <p className="rating-number">{store.cover.valuation} rating</p>
+                  <p className="rating-number">4.5 rating</p>
                 </div>
               </div>
             </div>
-            :
-            ''
-          }
         </div>
       </div>
     </div>
