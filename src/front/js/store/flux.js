@@ -26,7 +26,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			comments: null,
 			image: null,
 			uploadStatus: null,
-			artist: {}
+			artist: []
 		},
 		actions: {
 			postImage: async (imageFile) => {

@@ -17,6 +17,14 @@ body{
     color: white;
     position: relative;
   }
+
+  .btn-hero{
+    text-decoration: none;
+    color: whitesmoke;
+    letter-spacing: 2px;
+    Cursor: pointer; 
+    Text-Decoration: None !important; 
+  }
   
 .hero-content {
     max-width: 600px;  
@@ -126,6 +134,13 @@ img.rounded-circle {
     text-decoration: underline;
     font-size: 1.2rem;
     color: white;
+}
+
+.cover-semanal{
+    color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 
