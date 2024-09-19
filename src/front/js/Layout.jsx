@@ -12,6 +12,7 @@ import { Error404 } from "./pages/Error404.jsx";
 import { LoginSignup } from "./pages/LoginSignup.jsx";
 import { Cover } from "./pages/Cover.jsx";
 import { ArtistPage } from "./pages/ArtistPage.jsx";
+import { PoliticasDeCoikies } from "./pages/PoliticasDeCookies.jsx";
 
 
 // Create your first component
@@ -32,6 +33,7 @@ const Layout = () => {
                         <Route element={<LoginSignup/>} path="/loginsignup"/>
                         <Route element={<Cover/>} path="/cover"/>
                         <Route element={<ArtistPage/>} path="/artistpage"/>
+                        <Route element={<PoliticasDeCoikies/>} path="/politicasdecookies" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
