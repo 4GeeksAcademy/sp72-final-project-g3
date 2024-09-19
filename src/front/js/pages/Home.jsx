@@ -2,8 +2,6 @@ import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import "../../styles/home.css";
 import { HeroSection } from "../component/HeroSection.jsx";
-import { ReviewCard } from "../component/ReviewCard.jsx";
-import { CoverCard } from "../component/CoverCard.jsx";
 import { ImageUploader } from "../component/ImageUploader.jsx";
 import { ExtraInfo } from "../component/ExtraInfo.jsx";
 import { CoverCardTrial } from "../component/CoverCardTrial.jsx";
@@ -24,7 +22,6 @@ export const Home = () => {
 			<HeroSection />
 			<CoverCardTrial />
 			<InfoCover />
-			<CoverCard />
 		</div>
 	);
 };

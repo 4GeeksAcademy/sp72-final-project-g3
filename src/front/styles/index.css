@@ -5,11 +5,11 @@
     General Styles used on every website (Don't Repeat Yourself)
 */
 body{
-    background: #14181C;
+    background: #14181C !important;
 }
 
 .hero-section {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: flex-start;  
@@ -40,6 +40,7 @@ body{
     flex-wrap: wrap; 
     gap: 20px; 
     padding: 20px; 
+    background-color: #14181C;
 }
 
 .review-card-container {
